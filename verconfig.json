@@ -1,0 +1,1 @@
+{"clientMin":"1.0.0","modules":{"ABLobby":{"resVersion":"45407","showVer":"1.0.135","priority":6,"depend":[]},"ABSubGame1":{"resVersion":"8f7b8","showVer":"1.0.135","priority":5,"depend":["ABLobby"]},"ABSubGame2":{"resVersion":"c05e7","showVer":"1.0.135","priority":4,"depend":["ABSubGame1"]}}}
