@@ -86,10 +86,11 @@ cc.Class({
 
     //顺序任务 idx:0~N,  AppComFunc.sequenceMis(misArr, onAllFolderDetectFinish, (curMis, idx, onExec)=>{ })
     sequenceMis(misArr, onAllExec, execFunc){
-        cc.log("sequenceMis__enter_:")
+
         let co = 0
         let execMis ;
         execMis = ()=>{
+            console.log(" co>=misArr.length ", co,  misArr.length)
             if(co>=misArr.length){
                 onAllExec()
                 return 

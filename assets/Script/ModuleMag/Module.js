@@ -1,7 +1,7 @@
 
 
 let JS_LOG = function(...arg){ 
-    cc.log("[Module]",...arg) ; 
+    console.log("[Module]",...arg) ; 
 }
 let ModuleConst = require("ModuleConst")
 
@@ -32,6 +32,7 @@ cc.Class({
 
     loadAB(cb, version){
         // {version: 'fbc07'},
+        JS_LOG("version:", version);
         let loadArg = {}
         if(version){
             loadArg.version = version
@@ -68,23 +69,23 @@ cc.Class({
 
         //---------------------------------------------------------
         let autoAtlas = []
-        let resMap = this._abObj._config.assetInfos._map
-        for(let idx in resMap){
-            let item = resMap[idx]
-            if(!item.path && item.nativeVer){
-                let urll = cc.assetManager.utils.getUrlWithUuid(item.uuid, {
-                    __nativeName__: ".png",
-                    nativeExt: cc.path.extname(".png"),
-                    isNative: true
-                }); 
-                if(urll){
-                    autoAtlas.push(urll)
-                }
-            }
-        }
+        // let resMap = this._abObj._config.assetInfos._map
+        // for(let idx in resMap){
+        //     let item = resMap[idx]
+        //     if(!item.path && item.nativeVer){
+        //         let urll = cc.assetManager.utils.getUrlWithUuid(item.uuid, {
+        //             __nativeName__: ".png",
+        //             nativeExt: cc.path.extname(".png"),
+        //             isNative: true
+        //         });
+        //         JS_LOG("urll:",urll);
+        //         if(urll){
+        //             autoAtlas.push(urll)
+        //         }
+        //     }
+        // }
 
-        // JS_LOG("autoatlas_url_arr_:", JSON.stringify(autoAtlas))
-        console.log(" autoatlas_url_arr_:", JSON.stringify(autoAtlas))
+        JS_LOG("autoatlas_url_arr_:", JSON.stringify(autoAtlas))
         let extNum = autoAtlas.length 
         let finishNum = 0
         let is_2Valid = true
@@ -92,9 +93,9 @@ cc.Class({
             if(autoAtlas.length == 0 ){ 
                 if(!is_2Valid){ return; }; is_2Valid = false ;
                 onComplete && onComplete();
-                return 
+                return
             }
-
+            JS_LOG("preloadAny")
             // RequestType.URL = 'url' 
             cc.assetManager.preloadAny(autoAtlas, { __requestType__: 'url', type: null, bundle: this._abObj.name }, 
                 (finish, total, item)=>{
@@ -108,7 +109,6 @@ cc.Class({
                         onComplete && onComplete();
                     }else { 
                         JS_LOG("preloadAutoAtlas_error:", JSON.stringify(error) )
-                        console.log("preloadAutoAtlas_error:", JSON.stringify(error) )
                         this.scheduleOnce(()=>{
                             this.preloadModule(onProgress, onComplete);
                         }, 3)
@@ -121,11 +121,13 @@ cc.Class({
 
         this._abObj.preloadDir("root", (finish, total, item)=>{
             if(!is_Valid){ return; };
+            JS_LOG("preloadDir:", finish, total, item);
             finishNum = total
             onProgress && onProgress(finish, total + extNum, item);
         }, (error, items)=>{
             if(!is_Valid){ return; }; is_Valid = false ;
             if(!error){
+                JS_LOG("preloadAutoAtlas")
                 // onComplete && onComplete(items);
                 preloadAutoAtlas()
             }else {

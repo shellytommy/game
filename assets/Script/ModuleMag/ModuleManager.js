@@ -5,7 +5,7 @@ let Module = require("Module")
 let ModuleConst = require("ModuleConst")
 
 let JS_LOG = function(...arg){ 
-    cc.log("[ModuleManager]",...arg) ; 
+    console.log("[ModuleManager]",...arg) ; 
 }
 
 cc.Class({
@@ -21,21 +21,21 @@ cc.Class({
         this._ModuleCom     = this.getComponent("ModuleCom")
         this._unpackage     = this.getComponent("UnpackageHelper")
         this._HotUIHelper   = this.getComponent("HotUIHelper") 
-
-        // jsb.fileUtils.getDefaultResourceRootPath()
+        
         this._nativeRootPath = ""   // native ab根路径 , 以 / 结尾
-        if(cc.sys.isNative && typeof(jsb)!="undefined"){
+        if(cc.sys.isNative){
             let absPath1 = jsb.fileUtils.fullPathForFilename(this.asset1.nativeUrl).replace("//","/")
             let absPath2 = jsb.fileUtils.fullPathForFilename(this.asset2.nativeUrl).replace("//","/")
             let testLen = absPath1.length>absPath2.length? absPath2.length : absPath1.length 
             for(let i=0;i<testLen;i++){
                 if(absPath1[i] != absPath2[i]){
+                    console.log("index:", i, absPath1[i])
                     this._nativeRootPath = absPath1.substring(0, i)
                     break
                 }
-            } 
-            cc.log("default_path_:", jsb.fileUtils.getDefaultResourceRootPath()); 
-            cc.log("absFile_path_2:", this._nativeRootPath )
+            }
+            JS_LOG("default_path_:", jsb.fileUtils.getDefaultResourceRootPath()); 
+            JS_LOG("absFile_path_2:", this._nativeRootPath )
         }
     },
 
@@ -143,9 +143,10 @@ cc.Class({
         } 
     },
     _doHotUpdateMulti(moduleNameArr, callback){
-        console.log("moduleNameArr ", JSON.stringify(moduleNameArr), this._useHotUpdate);
+
         if(!this._useHotUpdate){
             callback && callback();
+            JS_LOG("Don't need update")
             return false;
         }
 
@@ -155,10 +156,10 @@ cc.Class({
             console.log(" 大版本太旧 ")
             return 
         }
-        JS_LOG("moduleName_ori:", JSON.stringify(moduleNameArr) )
+        JS_LOG("moduleName_ori:", moduleNameArr)
         moduleNameArr = this.getDependModule(moduleNameArr)
-        JS_LOG("moduleName_dep:", JSON.stringify(moduleNameArr) )
-        console.log(" moduleName_dep ", JSON.stringify(moduleNameArr))
+        JS_LOG("moduleName_dep:", moduleNameArr)
+
         // isShowHotUI 
         let need_Update  = false 
         let need_Restart = false 
@@ -183,11 +184,11 @@ cc.Class({
 
         // 下载 assets bundle 资源
         let needUpdateNames = []
-
+        
         let preloadDir = ()=>{
+            JS_LOG("needUpdateNames:",needUpdateNames)
             this._ModuleCom.sequenceMis(needUpdateNames, ()=>{
-                // JS_LOG("hot_update_-allPreloadFinish")
-                console.log("hot_update_-allPreloadFinish")
+                JS_LOG("hot_update_-allPreloadFinish", JSON.stringify( needUpdateNames));
                 // 所有任务完成
                 this._HotUIHelper.hideUpdating(onAllModuleHotFinish)
 
@@ -196,9 +197,9 @@ cc.Class({
                 let curMisIdx = idx+1
                 let totalMis = needUpdateNames.length
                 let moduleObj = this.modules[needUpdateNames[idx]]
+                JS_LOG("needUpdateNames,idx:",needUpdateNames,idx)
                 moduleObj.preloadModule((finish, total, item)=>{
-                    console.log("hot_update_-onProgress_info_:", curMisIdx,finish,total,item.url)
-                    // JS_LOG("hot_update_-onProgress_info_:", curMisIdx, finish, total, item.url )
+                    JS_LOG("hot_update_-onProgress_info_:", curMisIdx, finish, total, item.url )
                     this._HotUIHelper.onProgress( curMisIdx, totalMis, finish, total)
                 }, (items)=>{
                     console.log(" hot_update_-preloadOK_: ", needUpdateNames[idx])
@@ -208,7 +209,6 @@ cc.Class({
             })
         }
 
-        console.log(" 顺序下载配置 ")
         // ------------------------------------------- 顺序下载配置 
         this._ModuleCom.sequenceMis(moduleNameArr, ()=>{
             // 所有配置下载完成
@@ -230,7 +230,7 @@ cc.Class({
             let retTemp = {}
             retTemp = this._hotUpdateModule(moduleName, (hot_ret)=>{
                 let {haveNewVer, needRestart} = hot_ret
-                console.log(" haveNewVer, needRestart ", haveNewVer, needRestart)
+                JS_LOG("moduleName,haveNewVer,needRestart ", moduleName, haveNewVer, needRestart)
                 if(haveNewVer) { 
                     need_Update = true 
                     needUpdateNames.push(moduleName)
@@ -301,9 +301,9 @@ cc.Class({
                 cb && cb();
             }, ver)
         }
-
         if(!moduleObj){
             // 未加载过, 更新后不需要重启
+            JS_LOG("未加载过, 更新后不需要重启:",moduleObj,moduleName)
             moduleObj = new Module()
             loadVerFunc( moduleObj.init(moduleName), romoteVer, ()=>{
                 this.modules[moduleName] = moduleObj
@@ -312,6 +312,7 @@ cc.Class({
 
         }else {
             // 已加载, 若有更新则更新后重启
+            JS_LOG("已加载, 若有更新则更新后重启:",moduleObj,moduleName)
             if(local_Ver == romoteVer){
                 callback && callback(ret);
             }else {
@@ -376,22 +377,19 @@ cc.Class({
     },
 
     reqVersionInfo(callback){
-        console.log(" this._useHotUpdate ", this._useHotUpdate)
+
         if(!this._useHotUpdate){
             callback && callback();
             return false;
         }
-        console.log(" this._httpReqHandler ", this._httpReqHandler)
 
         if(this._httpReqHandler){
             this._httpReqHandler.abort()
         }
         let verUrl = ModuleConst.hotUrl + "verconfig.json" + "?renew=" + this._ModuleCom.createUUID() 
         JS_LOG("req_version_url_:", verUrl)
-        console.log(" verUrl ", verUrl);
 
         this._httpReqHandler = this._ModuleCom.makeXMLHttp({url: verUrl, callback:(_args)=>{
-            console.log("_args  ", JSON.stringify(_args));
             let httpData = _args.retData
             if(!httpData){
                 return ;

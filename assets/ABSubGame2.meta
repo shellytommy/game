@@ -3,7 +3,7 @@
   "uuid": "f2d122f1-dc76-4b2d-8388-332c46ba8acb",
   "isBundle": true,
   "bundleName": "ABSubGame2",
-  "priority": "4",
+  "priority": "1",
   "compressionType": {
     "ios": "merge_all_json",
     "mac": "merge_all_json",

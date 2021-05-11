@@ -5,7 +5,7 @@ window._Gloabal = {
 }
 
 let JS_LOG = function(...arg){ 
-    cc.log("[HelloWorld]",...arg) ; 
+    console.log("[HelloWorld]",...arg) ; 
 }
 
 
@@ -29,7 +29,7 @@ cc.Class({
 
         if (cc.sys.isNative) {
             JS_LOG("jsb_writable_:", jsb.fileUtils.getWritablePath());
-        }
+        } 
 
 
         window._G_AppCom = this._AppCom = this.getComponent("AppCom")
@@ -48,9 +48,9 @@ cc.Class({
 
         // 复制包内模块到可读写路径下,避免首次加载模块时从远程完整拉取
         _G_moduleMag.execUnpackage(()=>{
-
+            JS_LOG("获取最新版本")
             _G_moduleMag.reqVersionInfo(()=>{ // 获取最新版本
-                this.reloadLobbyRoot()
+                this.reloadLobbyRoot() //loading lobby bundle
             })
         })
 
