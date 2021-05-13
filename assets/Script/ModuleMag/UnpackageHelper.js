@@ -3,7 +3,7 @@
 let ModuleConst = require("ModuleConst")
 // let UnpackageHelper = require("UnpackageHelper")
 let JS_LOG = function(...arg){ 
-    cc.log("[UnpackageHelper]",...arg) ; 
+    console.log("[UnpackageHelper]",...arg) ; 
 }
 
 cc.Class({
@@ -27,7 +27,7 @@ cc.Class({
     },
 
     execUnpackage(onComplete){
-        console.log("sdffsfsfdsfdsfsff cc.sys.os = ", cc.sys.isNative)
+
         if ( !cc.sys.isNative ) {
             JS_LOG("ignore_unpackage")
             onComplete();
@@ -36,24 +36,25 @@ cc.Class({
 
         let localClientVer = cc.sys.localStorage.getItem(ModuleConst.localClientVer)
         let writablePath = jsb.fileUtils.getWritablePath() 
-        let path_cache  = writablePath + "gamecaches/" 
-        
+        let path_cache  = writablePath + "gamecaches/" //缓存可写路径
+
+        JS_LOG("Client_Version:", _Gloabal.Client_Version,localClientVer )
+
         if( _Gloabal.Client_Version == localClientVer && jsb.fileUtils.isFileExist(path_cache+"cacheList.json")){
-            console.log("Client_Version  = ")
+            JS_LOG("Non-first start")
             JS_LOG("Unpackage_not_exec")
             onComplete()
             return ; 
 
         }else { 
+            JS_LOG("第一次启动该版本")
             // 第一次启动该版本
-            let nativeRoot = this._moduleMag.getNativePath() //  
-            console.log("nativeRoot  = ", nativeRoot)
+            let nativeRoot = this._moduleMag.getNativePath() //app根路径
             let path_native = nativeRoot + "PKgamecaches/"
             JS_LOG("unpackage_res_:", path_native, path_cache )
 
             if(!jsb.fileUtils.isDirectoryExist(path_native)){
                 JS_LOG("PKgamecaches_not_exist")
-                console.log("PKgamecaches_not_exist ")
                 cc.sys.localStorage.setItem(ModuleConst.localClientVer, _Gloabal.Client_Version )
                 onComplete()
                 return ; 
@@ -102,7 +103,7 @@ cc.Class({
             this._HotUIHelper.unpackageShow()
             this.copyFoldTo(path_native, path_cache, (finish, total)=>{
                 this._HotUIHelper.unpackageUpdateProgress(finish, total)
-                // JS_LOG("copy_file_:", finish, total)
+                JS_LOG("copy_file_:", finish, total)
             },()=>{
                 // 完成 
                 this._HotUIHelper.unpackageFinish()  
