@@ -1,0 +1,36 @@
+{
+  "ver": "2.3.5",
+  "uuid": "d68af6c5-4f51-444b-b437-0c4c9e45e967",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 963,
+  "height": 451,
+  "platformSettings": {},
+  "subMetas": {
+    "slot_fruit_fuselage_01": {
+      "ver": "1.0.4",
+      "uuid": "6d06fd1d-42c3-415f-9467-8611d996a90f",
+      "rawTextureUuid": "d68af6c5-4f51-444b-b437-0c4c9e45e967",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 963,
+      "height": 451,
+      "rawWidth": 963,
+      "rawHeight": 451,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

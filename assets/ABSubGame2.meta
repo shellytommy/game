@@ -12,7 +12,7 @@
   "optimizeHotUpdate": {
     "ios": false,
     "mac": false,
-    "android": false
+    "android": true
   },
   "inlineSpriteFrames": {
     "ios": false,

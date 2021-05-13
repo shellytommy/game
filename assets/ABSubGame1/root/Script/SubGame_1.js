@@ -1,31 +1,35 @@
 
 
 let JS_LOG = function(...arg){ 
-    cc.log("[SubGame_1]",...arg) ; 
+    console.log("[SubGame_1]",...arg) ; 
 }
 
-let LobbyConst = require("LobbyConst")
-JS_LOG("game1_req_lobby_js_:", LobbyConst.testv)
+ryyl.baseclass.extend({
 
-cc.Class({
-    extends: cc.Component, 
-    properties: {
+    properties:{
+        SlotMachine:cc.Prefab,
+    },
 
-    },
-    onLoad(){
-        console.log(" ppppppppppppppppppp ")
-    },
     initModule(args){
-    	JS_LOG("initModule")
-        console.log(" initModuleinitModuleinitModule ")
-    	let { lobbyRoot } = args
-    	this._lobbyRoot = lobbyRoot
+        console.log("initModule")
+        let { lobbyRoot } = args
+        this._lobbyRoot = lobbyRoot
+    },
+
+    onLoad(){
+        JS_LOG("SubGame_1 onLoad")
+        ryyl.panel.showPanel(this.SlotMachine, this.node);
     },
 
     onBtn_close(){
-    	JS_LOG("btn_close")
-        console.log(" btn_closebtn_closebtn_closebtn_closebtn_close ")
-    	this._lobbyRoot.removeGame_1()
+        JS_LOG("btn_close");
+        this._lobbyRoot.removeGame_1();
+        this.remove();
     },
 
+    onBtn_payTableClicked(){
+        JS_LOG("btn_close");
+    },
+
+    
 });
