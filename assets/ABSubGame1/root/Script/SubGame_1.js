@@ -4,6 +4,8 @@ let JS_LOG = function(...arg){
     console.log("[SubGame_1]",...arg) ; 
 }
 
+let SlotConst = require("SlotConst");
+
 ryyl.baseclass.extend({
 
     properties:{
@@ -29,6 +31,18 @@ ryyl.baseclass.extend({
 
     onBtn_payTableClicked(){
         JS_LOG("btn_close");
+    },
+
+
+    onClick(name, node){
+        JS_LOG("name");
+
+        switch (name) {
+            case "slot_rule":
+                ryyl.emitter.emit(SlotConst.CTCEvent.onProcess, {process: SlotConst.eSlotCallbackType.sendStart});
+                break;
+        }
+
     },
 
     

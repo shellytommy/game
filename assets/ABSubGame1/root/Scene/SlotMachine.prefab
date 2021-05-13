@@ -361,6 +361,29 @@
         "__uuid__": "a9ed121f-8b20-4bac-8bd7-54c25aeb5231"
       }
     ],
+    "audio_loop": {
+      "__uuid__": "62ab587b-0958-4793-8c1e-86b9d7b7b87a"
+    },
+    "audio_stop": [
+      {
+        "__uuid__": "9bd83ca6-0443-4d0c-89b3-5facc008f218"
+      },
+      {
+        "__uuid__": "9bd83ca6-0443-4d0c-89b3-5facc008f218"
+      },
+      {
+        "__uuid__": "d72ac02d-0850-4069-9fb7-0cdb7a64e3c1"
+      },
+      {
+        "__uuid__": "208d65b8-be6f-4bcd-a159-b0eb3543e39e"
+      },
+      {
+        "__uuid__": "f88bff3c-1677-46ff-9e24-e0f7f3b5d224"
+      },
+      {
+        "__uuid__": "17065fb1-7134-417b-8bee-66520161fbcf"
+      }
+    ],
     "_id": ""
   },
   {

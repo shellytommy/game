@@ -85,14 +85,14 @@ window.initGlobal = function() {
     // ryyl.log = deepClone(console.log);
     // ryyl.fileutil = require("fileutil")(); // 文件操作管理
     ryyl.emitter = require("emitter")(); // 事件管理
-    // ryyl.storage = require("storage")(); // 缓存管理
+    ryyl.storage = require("storage")(); // 缓存管理
     // ryyl.gameNet = require("GameNet")(); // 网络管理
     // ryyl.loader = require("loader")(); // 资源加载管理
     // ryyl.scene = require("scene")(); // 场景管理
     ryyl.panel = require("panel")(); // 界面管理
     // ryyl.waitPanel = require("waitPanel")(); // 界面管理
     // ryyl.assets = require("assets"); // 热跟新管理
-    // ryyl.audio = require("audio")(); // 声音管理
+    ryyl.audio = require("audio")(); // 声音管理
 
     // ryyl.servercfg = require("servercfg")(); // 服务器配置模块
     // ryyl.logon = require("logon")(); // 登陆数据模块
