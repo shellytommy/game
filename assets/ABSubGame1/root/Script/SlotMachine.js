@@ -152,11 +152,15 @@ ryyl.baseclass.extend({
     onProcess(data){
         let _process            = data.process;
         let eSlotCallbackType   = SlotConst.eSlotCallbackType;
+        let recv                = data.recv;
 
         switch (_process) {
             case eSlotCallbackType.sendStart:
                 this.runSlot();
-            break;
+                break;
+            case eSlotCallbackType.slotStop:
+                this.slotStopAnimation(recv);
+                break;
         }
 
     },
@@ -216,7 +220,6 @@ ryyl.baseclass.extend({
     },
 
     rolling(col){
-        JS_LOG("startRollPrepare 11111");
 
         let eSlotShap       = this._eSlotShap;
         let visibleIdx      = this._invisibleGroup[col];
@@ -298,7 +301,7 @@ ryyl.baseclass.extend({
             group = this._slotColGroup[col][idx]
             if(idx == 1){
                 actions = cc.sequence(
-                    cc.easeBackOut(cc.moveBy(SlotConst.kSlotTableStop*SlotConst.frameRate, cc.v2(0, -this._size.height))),
+                    cc.easeBackOut(cc.moveBy(SlotConst.kSlotTableStop, cc.v2(0, -this._size.height))),
                     cc.callFunc(function(){
                         this.changeInvisibleGroup(col);
                         let invisibleIdx = this._invisibleGroup[col];
@@ -316,7 +319,7 @@ ryyl.baseclass.extend({
                 )
             }
             else{
-                actions = cc.easeBackOut(cc.moveBy(SlotConst.kSlotTableStop*SlotConst.frameRate, cc.v2(0, -this._size.height)))
+                actions = cc.easeBackOut(cc.moveBy(SlotConst.kSlotTableStop, cc.v2(0, -this._size.height)))
             }
             
             group.stopAllActions();

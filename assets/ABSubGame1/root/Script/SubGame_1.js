@@ -39,7 +39,19 @@ ryyl.baseclass.extend({
 
         switch (name) {
             case "slot_rule":
+                break;
+             case "startSpin":
                 ryyl.emitter.emit(SlotConst.CTCEvent.onProcess, {process: SlotConst.eSlotCallbackType.sendStart});
+                break;
+             case "stopSpin":
+                let spinRecv = {
+                    status      : 0,
+                    itemList    : [9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 1, 8, 7, 5, 9],
+                    scatterWin  : 0,
+                    linesWin    : 0,
+                    bonusFree   : 0,
+                }
+                ryyl.emitter.emit(SlotConst.CTCEvent.onProcess, {process: SlotConst.eSlotCallbackType.slotStop, recv : spinRecv});
                 break;
         }
 
