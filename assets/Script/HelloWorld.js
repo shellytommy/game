@@ -28,9 +28,8 @@ cc.Class({
         this.hackSysLog()
 
         if (cc.sys.isNative) {
-            JS_LOG("jsb_writable_:", jsb.fileUtils.getWritablePath());
+            JS_LOG("jsb_writable_path:", jsb.fileUtils.getWritablePath());
         } 
-
 
         window._G_AppCom = this._AppCom = this.getComponent("AppCom")
 

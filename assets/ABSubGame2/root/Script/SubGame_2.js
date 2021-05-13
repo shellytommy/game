@@ -9,6 +9,10 @@ cc.Class({
 
     },
 
+    onLoad(){
+        JS_LOG(" 添加的测试信息 ")
+    },
+
     initModule(args){
     	JS_LOG("initModule")
     	let { lobbyRoot } = args
