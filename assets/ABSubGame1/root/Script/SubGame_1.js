@@ -46,7 +46,7 @@ ryyl.baseclass.extend({
              case "stopSpin":
                 let spinRecv = {
                     status      : 0,
-                    itemList    : [9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 1, 8, 7, 5, 9],
+                    itemList    : [9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 1, 8, 7, 5, 8],
                     scatterWin  : 0,
                     linesWin    : 0,
                     bonusFree   : 0,

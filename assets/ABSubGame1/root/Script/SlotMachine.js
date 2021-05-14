@@ -301,11 +301,11 @@ ryyl.baseclass.extend({
             group = this._slotColGroup[col][idx]
             if(idx == 1){
                 actions = cc.sequence(
-                    cc.easeBackOut(cc.moveBy(SlotConst.kSlotTableStop, cc.v2(0, -this._size.height))),
+                    cc.moveBy(SlotConst.kSlotTableStop, cc.v2(0, -this._size.height / 2)).easing(cc.easeBackOut()),
                     cc.callFunc(function(){
                         this.changeInvisibleGroup(col);
                         let invisibleIdx = this._invisibleGroup[col];
-                        this._slotColGroup[col][invisibleIdx].y = this._size.height;
+                        this._slotColGroup[col][invisibleIdx].y = -this._size.height/2;
                         
                         this.stopCal(col);
 
@@ -319,7 +319,7 @@ ryyl.baseclass.extend({
                 )
             }
             else{
-                actions = cc.easeBackOut(cc.moveBy(SlotConst.kSlotTableStop, cc.v2(0, -this._size.height)))
+                actions = cc.moveBy(SlotConst.kSlotTableStop, cc.v2(0, -this._size.height / 2)).easing(cc.easeBackOut())
             }
             
             group.stopAllActions();
@@ -355,7 +355,7 @@ ryyl.baseclass.extend({
     changeInvisibleGroup(col){
         let eSlotShap = this._eSlotShap;
 
-        this._invisibleGroup[col] = (this._invisibleGroup[col] == eSlotShap.Plate ? (eSlotShap.Plate - 1) : eSlotShap.Plate);
+        this._invisibleGroup[col] = (this._invisibleGroup[col] != eSlotShap.Plate ? (eSlotShap.Plate - 1) : eSlotShap.Plate);
     },
 
     iconRollingAction(icon, col, row){
@@ -388,7 +388,7 @@ ryyl.baseclass.extend({
         let invisibleGroup  = this._slotColGroup[col][invisibleIdx];
         let child           = invisibleGroup.children;
 
-        for (var row = 1; i <= eSlotShap.horizontal; row++) {
+        for (var row = 1; row <= eSlotShap.horizontal; row++) {
             let icon, frame;
             for (var i = 0; i < child.length; i++) {
                 if(child[i] && child[i].tags == row) {
@@ -396,12 +396,10 @@ ryyl.baseclass.extend({
                     break;
                 }
             }
-
             if(!icon) continue;
 
             if (this._state == eSpinState.stoping && this._stopCol == col && this.itemList != null) {
-
-                let idx = (col-1)*eSlotShap.horizontal + row;
+                let idx = (col-1)*eSlotShap.horizontal + row - 1;
                 frame = spIcons[this.itemList[idx]];
                 this._resultList[idx] = icon;
             }
