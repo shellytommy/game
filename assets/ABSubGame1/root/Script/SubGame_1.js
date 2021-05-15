@@ -10,6 +10,7 @@ ryyl.baseclass.extend({
 
     properties:{
         SlotMachine:cc.Prefab,
+        SlotLineLayer:cc.Prefab,
     },
 
     initModule(args){
@@ -19,8 +20,10 @@ ryyl.baseclass.extend({
     },
 
     onLoad(){
-        JS_LOG("SubGame_1 onLoad")
-        ryyl.panel.showPanel(this.SlotMachine, this.node);
+        JS_LOG("SubGame_1 onLoad");
+
+        ryyl.panel.showPanel(this.SlotMachine,      this.node);
+        ryyl.panel.showPanel(this.SlotLineLayer,    this.node);
     },
 
     onBtn_close(){
@@ -52,6 +55,9 @@ ryyl.baseclass.extend({
                     bonusFree   : 0,
                 }
                 ryyl.emitter.emit(SlotConst.CTCEvent.onProcess, {process: SlotConst.eSlotCallbackType.slotStop, recv : spinRecv});
+                break;
+            case "selectLine":
+                ryyl.emitter.emit(SlotConst.CTCEvent.selectLine);
                 break;
         }
 

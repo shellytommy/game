@@ -59,7 +59,7 @@ ryyl.baseclass.extend({
         this.itemsNet.stopAllActions();
         this.itemsNet.removeAllChildren();
         this.setUpView(this.itemsNet);
-
+        ryyl.emitter.emit(SlotConst.CTCEvent.initLayer, {pointArray: this.pointArray});
     },
 
     OnDestroy(){
@@ -125,10 +125,10 @@ ryyl.baseclass.extend({
             center      : cc.v2(x, y),
             left        : cc.v2(x- contentSizeWidth/2, y),
             right       : cc.v2(x+ contentSizeWidth/2, y),
-            leftUp      : cc.v2(x- contentSizeWidth/2 + 4, y+ contentSizeHeight / 2 - 4),
-            leftDown    : cc.v2(x- contentSizeWidth/2 + 4, y- contentSizeHeight / 2 + 4),
-            rightUp     : cc.v2(x+ contentSizeWidth/2 - 4, y+ contentSizeHeight / 2 - 4),
-            rightDown   : cc.v2(x+ contentSizeWidth/2 - 4, y- contentSizeHeight / 2 + 4),
+            leftUp      : cc.v2(x- contentSizeWidth/2 + 4, y + contentSizeHeight / 2 - 4),
+            leftDown    : cc.v2(x- contentSizeWidth/2 + 4, y - contentSizeHeight / 2 + 4),
+            rightUp     : cc.v2(x+ contentSizeWidth/2 - 4, y + contentSizeHeight / 2 - 4),
+            rightDown   : cc.v2(x+ contentSizeWidth/2 - 4, y - contentSizeHeight / 2 + 4),
         }
 
         let eSlotShap = this._eSlotShap;
@@ -457,7 +457,7 @@ ryyl.baseclass.extend({
         }
 
        
-        if(bonusFree>0 && winBouns.length > 0){
+        if(bonusFree > 0 && winBouns.length > 0){
             // this.slotLineLayer.resultBonusShow(winBouns, itemList)
         }
 

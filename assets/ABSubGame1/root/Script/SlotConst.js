@@ -1,6 +1,12 @@
 
 let SlotConst = {
 
+	CTCEvent:{
+        onProcess  : 'ccOnProcess',    //进度通知
+        initLayer  : 'initLayer',
+        selectLine : 'selectLine',
+    },
+
 	eSpinState : {
 		stop 		: 1,
 		spining 	: 2,
@@ -31,16 +37,13 @@ let SlotConst = {
 
 	kSlotTableStop : 0.5,
 
-	CTCEvent:{
-        onProcess  : 'ccOnProcess',    //进度通知
-    },
-
     eSlotConmonData : {
 		maxPlayerNum 	: 5,
 		kSlotScatter 	: 11,
 		kSlotTournament : 9,
 		kSlotPlaceholder : -1,
 	    kSlotMaxMultiPerLine : 9,
+	    kSlotMinMultiPerLine : 1,
 
 		kMaxItemType 	: 11,
 		kMaxItemNum 	: 15,
