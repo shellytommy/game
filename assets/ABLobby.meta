@@ -14,7 +14,7 @@
     "ios": false,
     "mac": false,
     "web-mobile": false,
-    "android": false
+    "android": true
   },
   "inlineSpriteFrames": {
     "ios": false,
