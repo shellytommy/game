@@ -1,11 +1,7 @@
-
-
-
-
 // HotUIHelper  热更新的一些界面提示
 
 let JS_LOG = function(...arg){ 
-    cc.log("[HotUIHelper]",...arg) ; 
+    console.log("[HotUIHelper]",...arg) ; 
 }
 cc.Class({
     
@@ -32,7 +28,6 @@ cc.Class({
         // this.misNum.string = curMis + "/" + totalMis
         // this.update_proBar.progress = 1.0*finish/total
         JS_LOG(`onProgress : curMis_${curMis},totalMis_${totalMis},finish_${finish},total_${total}`)
-        console.log(`onProgress : curMis_${curMis},totalMis_${totalMis},finish_${finish},total_${total}`)
     },
 
     showUpdating(curMis, totalMis){
@@ -58,7 +53,7 @@ cc.Class({
 
     //--------------------------------------------------------->> 解压资源
     unpackageShow(){
-        JS_LOG("unpackageShow")
+        JS_LOG("unpackageShow unuse")
     },
     
     unpackageUpdateProgress(finish, total){ 

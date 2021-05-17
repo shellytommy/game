@@ -18,24 +18,27 @@ cc.Class({
     },
 
     onLoad(){
+
         this._ModuleCom     = this.getComponent("ModuleCom")
         this._unpackage     = this.getComponent("UnpackageHelper")
         this._HotUIHelper   = this.getComponent("HotUIHelper") 
-        
+
         this._nativeRootPath = ""   // native ab根路径 , 以 / 结尾
+
+        //Get resource root path.
         if(cc.sys.isNative){
             let absPath1 = jsb.fileUtils.fullPathForFilename(this.asset1.nativeUrl).replace("//","/")
             let absPath2 = jsb.fileUtils.fullPathForFilename(this.asset2.nativeUrl).replace("//","/")
             let testLen = absPath1.length>absPath2.length? absPath2.length : absPath1.length 
+
             for(let i=0;i<testLen;i++){
                 if(absPath1[i] != absPath2[i]){
-                    console.log("index:", i, absPath1[i])
                     this._nativeRootPath = absPath1.substring(0, i)
                     break
                 }
             }
-            JS_LOG("default_path_:", jsb.fileUtils.getDefaultResourceRootPath()); 
-            JS_LOG("absFile_path_2:", this._nativeRootPath )
+            // JS_LOG("default_path_:", jsb.fileUtils.getDefaultResourceRootPath()); 
+            JS_LOG("_nativeRootPath:", this._nativeRootPath )
         }
     },
 
@@ -70,6 +73,13 @@ cc.Class({
     getNativePath(){
         return this._nativeRootPath
     },
+
+    getWritablePathCash(){
+        let writablePath = jsb.fileUtils.getWritablePath() 
+        let path_cache  = writablePath + "gamecaches/" //缓存可写路径
+        return path_cache;
+    },
+
     reqLoopVersionInfo(){
         if(this._useHotUpdate){
             if(this._reqLoopHandler){ return }

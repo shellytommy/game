@@ -35,8 +35,9 @@ cc.Class({
         } 
 
         let localClientVer = cc.sys.localStorage.getItem(ModuleConst.localClientVer)
-        let writablePath = jsb.fileUtils.getWritablePath() 
-        let path_cache  = writablePath + "gamecaches/" //缓存可写路径
+        // let writablePath = jsb.fileUtils.getWritablePath() 
+        // let path_cache  = writablePath + "gamecaches/" //缓存可写路径
+        let path_cache = this._moduleMag.getWritablePathCash();
 
         JS_LOG("Client_Version:", _Gloabal.Client_Version,localClientVer )
 
@@ -100,7 +101,7 @@ cc.Class({
             }
             //--------------------------------------------------<<  替换 cacheManager 数据
 
-            this._HotUIHelper.unpackageShow()
+            // this._HotUIHelper.unpackageShow() // unuse
             this.copyFoldTo(path_native, path_cache, (finish, total)=>{
                 this._HotUIHelper.unpackageUpdateProgress(finish, total)
                 JS_LOG("copy_file_:", finish, total)
@@ -119,6 +120,7 @@ cc.Class({
         let co = 1
         if(cc.sys.os == cc.sys.OS_ANDROID){
             let cacheJson = jsb.fileUtils.getStringFromFile(dir + "cacheList.json")
+            console.log("cacheJson:",cacheJson);
             let cacheMap = JSON.parse(cacheJson)
             let files = cacheMap.files
             for(let url in files){
@@ -141,7 +143,7 @@ cc.Class({
         let eachFrameCopyNum = 5  // 每帧复制文件数
 
         if( (typeof(jsb)=="undefined") || !jsb.fileUtils.isDirectoryExist(oriRoot)){
-            cc.log("ori_folder_not_exist_:", oriRoot )
+            console.log("ori_folder_not_exist_:", oriRoot )
             onComplate();
             return 
         }
@@ -149,7 +151,7 @@ cc.Class({
         let filelist = []
         this.getFileListFromDir(oriRoot, filelist) 
 
-        cc.log("file_ori_arr_:",oriRoot, filelist.length);
+        console.log("file_ori_arr_:",oriRoot, filelist.length);
 
         let realFileArr = []
         for(let i=0;i<filelist.length;i++){
@@ -162,7 +164,7 @@ cc.Class({
         let totalLen = realFileArr.length
 
         if(totalLen==0){
-            cc.log("totalLen_is_0:", oriRoot )
+            console.log("totalLen_is_0:", oriRoot )
             onComplate();
             return ;
         }

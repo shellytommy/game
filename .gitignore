@@ -73,4 +73,4 @@ replace/
 build1/
 node_modules/
 win32Example_exe/
-
+hotRes/
