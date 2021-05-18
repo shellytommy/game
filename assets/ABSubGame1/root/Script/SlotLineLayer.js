@@ -25,10 +25,10 @@ ryyl.baseclass.extend({
     onLoad(){
 
         this.betLineNum   = SlotConst.eSlotConmonData.kSlotMinMultiPerLine;
-        this.isShowResult = false;
         this.effectMap    = [];
         this.showLineNode = [];
         this.lineNode     = [];
+        this._state       = SlotConst.eSpinState.stop;
 
         this.arrowSize  = this.lineArrow.getContentSize();
         this.scrollSize = this.topContainer.getContentSize();
@@ -59,12 +59,28 @@ ryyl.baseclass.extend({
 
         switch (_process) {
             case eSlotCallbackType.sendStart:
+                this._state  = SlotConst.eSpinState.spining;
                 this.hideSelectedLine();
                 break;
             case eSlotCallbackType.slotStop:
+                this._state  = SlotConst.eSpinState.stop;
                 break;
         }
 
+    },
+
+    changeSelectedLine() {
+        if(this._state  == SlotConst.eSpinState.spining) {
+            JS_ERROR("slot spining");
+            return;
+        }
+
+        this.betLineNum = (this.betLineNum + 1) % (SlotConst.eSlotConmonData.kSlotMaxMultiPerLine + 1);
+        if(this.betLineNum < SlotConst.eSlotConmonData.kSlotMinMultiPerLine) this.betLineNum = SlotConst.eSlotConmonData.kSlotMinMultiPerLine;
+        JS_ERROR("this.betLineNum = ", this.betLineNum);
+
+        this.removeResultLineAndNode()
+        this.updateLines()
     },
 
     initLayer(data){
@@ -187,19 +203,8 @@ ryyl.baseclass.extend({
         return line
     },
 
-    changeSelectedLine() {
-
-        this.betLineNum = (this.betLineNum + 1) % (SlotConst.eSlotConmonData.kSlotMaxMultiPerLine + 1);
-        if(this.betLineNum < SlotConst.eSlotConmonData.kSlotMinMultiPerLine) this.betLineNum = SlotConst.eSlotConmonData.kSlotMinMultiPerLine;
-        JS_ERROR("this.betLineNum = ", this.betLineNum);
-
-        this.removeResultLineAndNode()
-        this.updateLines()
-    },
-
     //remove all result Show lines and actions
     removeResultLineAndNode(){
-        this.isShowResult = false;
 
         for (var i = 0; i < this.showLineNode.length; i++) {
             let v = this.showLineNode[i];

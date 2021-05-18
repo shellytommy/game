@@ -89,7 +89,6 @@ ryyl.baseclass.extend({
         let bonusFree = slotSpanRev.bonusFree ? slotSpanRev.bonusFree : 0
         let itemList  = slotSpanRev.itemList;
         let fromPos   = slotSpanRev.fromPos ? slotSpanRev.fromPos : 0
-        let delayTime = slotSpanRev.delayTime ? slotSpanRev.delayTime : this.noAwardDelay;
         let freeTimes = slotSpanRev.freeTimes ? slotSpanRev.freeTimes : 0
         let freeTotalWin = slotSpanRev.freeTotalWin ? slotSpanRev.freeTotalWin : 0
         let potWin   = slotSpanRev.potWin ? slotSpanRev.potWin : 0
@@ -100,18 +99,22 @@ ryyl.baseclass.extend({
             return;
         }
 
-        let winInfo  = this.getWinInfo(itemList);
+        let winInfo  = this.getWinInfo(itemList, linesWin);
         let winLines = winInfo.winLines;
         let scatter  = winInfo.winScatters;
         let winBouns = winInfo.winBouns;
 
+        if(winLines && winLines.length > 0){
+            // this.slotLineLayer.resultScatterShow(scatter, itemList)
+        }
+
         //scatter Animation
-        if(scatterWin > 0){
+        if(scatterWin && scatterWin.length > 0){
             // this.slotLineLayer.resultScatterShow(scatter, itemList)
         }
 
        
-        if(bonusFree > 0 && winBouns.length > 0){
+        if(bonusFree > 0 && winBouns && winBouns.length > 0){
             // this.slotLineLayer.resultBonusShow(winBouns, itemList)
         }
 
@@ -126,7 +129,7 @@ ryyl.baseclass.extend({
         //if self.controlLayer then self.controlLayer:setWinLabel(win or "") end
     },
 
-    getWinInfo(itemList){
+    getWinInfo(itemList, linesWin){
         if(!itemList || itemList.length <= 0) {
             JS_ERROR("should not here") 
             return {};
@@ -143,32 +146,34 @@ ryyl.baseclass.extend({
         let winLines = [];
 
         //lines
-        for (var i = 1; i <= defaultLines.length; i++) {
-            let aWinLine    = [];
-            aWinLine.items  = [];
-            aWinLine.index  = i;
+        if(linesWin > 0){
+            for (var i = 1; i <= defaultLines.length; i++) {
+                let aWinLine    = [];
+                aWinLine.items  = [];
+                aWinLine.index  = i;
 
-            let lineIndexs = defaultLines[i]
-            let itemType = 0
-            for (var j = 0; j < lineIndexs.length; j++) {
-                let index = lineIndexs[j];
-                let thisItemType = itemList[index]
-                if(thisItemType == scatterType || thisItemType <= 0) break;
+                let lineIndexs = defaultLines[i]
+                let itemType = 0
+                for (var j = 0; j < lineIndexs.length; j++) {
+                    let index = lineIndexs[j];
+                    let thisItemType = itemList[index]
+                    if(thisItemType == scatterType || thisItemType <= 0) break;
 
-                if (!this.isEqualWild(thisItemType)){
-                    if(itemType == 0)
-                        itemType = thisItemType;
-                    else
-                        if(thisItemType != itemType) break;
+                    if (!this.isEqualWild(thisItemType)){
+                        if(itemType == 0)
+                            itemType = thisItemType;
+                        else
+                            if(thisItemType != itemType) break;
+                    }
+
+                    aWinLine.items.push(index);
                 }
 
-                aWinLine.items.push(index);
-            }
-
-            let sameNum = aWinLine.items.length;
-            aWinLine.itemType = itemType
-            if(itemType > 0 && sameNum > 0 && multipleList[itemType][sameNum] > 0 && i <= this.betLineNum) {
-                winLines.push(aWinLine)
+                let sameNum = aWinLine.items.length;
+                aWinLine.itemType = itemType
+                if(itemType > 0 && sameNum > 0 && multipleList[itemType][sameNum] > 0 && i <= this.betLineNum) {
+                    winLines.push(aWinLine)
+                }
             }
         }
 
