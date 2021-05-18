@@ -15,7 +15,7 @@ ryyl.baseclass.extend({
     properties:{
         topContainer    : cc.Node,
         lineArrow       : cc.Node,
-        lineNode        : cc.Node,
+        lineDemo        : cc.Node,
         slotTableArrow  : [cc.SpriteFrame],
         slotTableLine   : [cc.SpriteFrame],
 
@@ -28,6 +28,7 @@ ryyl.baseclass.extend({
         this.isShowResult = false;
         this.effectMap    = [];
         this.showLineNode = [];
+        this.lineNode     = [];
 
         this.arrowSize  = this.lineArrow.getContentSize();
         this.scrollSize = this.topContainer.getContentSize();
@@ -37,17 +38,33 @@ ryyl.baseclass.extend({
     },
 
     regisrterEvent(){
-        ryyl.emitter.on(SlotConst.CTCEvent.initLayer,  this.initLayer, this);
-        ryyl.emitter.on(SlotConst.CTCEvent.selectLine, this.showSelectedLine, this);
+        ryyl.emitter.on(SlotConst.CTCEvent.initLayer,       this.initLayer,             this);
+        ryyl.emitter.on(SlotConst.CTCEvent.selectLine,      this.changeSelectedLine,    this);
+        ryyl.emitter.on(SlotConst.CTCEvent.onProcess,       this.onProcess,             this);
     },
 
     unregisrterEvent(){
-        ryyl.emitter.off(SlotConst.CTCEvent.initLayer, this);
-        ryyl.emitter.off(SlotConst.CTCEvent.selectLine, this);
+        ryyl.emitter.off(SlotConst.CTCEvent.initLayer,      this);
+        ryyl.emitter.off(SlotConst.CTCEvent.selectLine,     this);
+        ryyl.emitter.off(SlotConst.CTCEvent.onProcess,      this);
     },
 
     OnDestroy(){
         this.unregisrterEvent();
+    },
+
+    onProcess(data){
+        let _process            = data.process;
+        let eSlotCallbackType   = SlotConst.eSlotCallbackType;
+
+        switch (_process) {
+            case eSlotCallbackType.sendStart:
+                this.hideSelectedLine();
+                break;
+            case eSlotCallbackType.slotStop:
+                break;
+        }
+
     },
 
     initLayer(data){
@@ -145,7 +162,7 @@ ryyl.baseclass.extend({
         }
 
         let contendSizeX = point2.x - point1.x + 2;
-        let line = cc.instantiate(this.lineNode);
+        let line = cc.instantiate(this.lineDemo);
         line.getComponent(cc.Sprite).spriteFrame = imgName;
 
         if(point1.x != point2.x){
@@ -170,7 +187,7 @@ ryyl.baseclass.extend({
         return line
     },
 
-    showSelectedLine() {
+    changeSelectedLine() {
 
         this.betLineNum = (this.betLineNum + 1) % (SlotConst.eSlotConmonData.kSlotMaxMultiPerLine + 1);
         if(this.betLineNum < SlotConst.eSlotConmonData.kSlotMinMultiPerLine) this.betLineNum = SlotConst.eSlotConmonData.kSlotMinMultiPerLine;
@@ -198,7 +215,62 @@ ryyl.baseclass.extend({
 
         this.effectMap      = [];
         this.showLineNode   = [];
-    }
+    },
 
+    resultBonusShow(bonusList, itemList){
+        this.resultScatterShow(bonusList, itemList, true)
+    },
+
+    resultScatterShow(scatterList, itemList, isBonus){
+        if(!scatterList){
+            JS_ERROR('resultScatterShow scatterList null');
+            return;
+        }
+
+        for (var i = 0; i < scatterList.length; i++) {
+            let v = scatterList[i];
+            this.playIconEffect(v,itemList, isBonus);
+        }
+    },
+
+    playIconEffect(index, itemList, isBonus){
+        if(!itemList) {
+            JS_ERROR("should not here");
+            return;
+        }
+
+        // let _eff = this.effectMap[index];
+        // if(!_eff){
+        //     let iconIndex = itemList[index];
+        //     if (iconIndex == SlotConst.bonus && !isBonus) return;
+
+        //     let effMap  = this.iconEffect.map or {}
+        //     let effName = this.iconEffect.effectName
+        //     let effectAction = effMap[iconIndex]
+
+        //     if effName and effectAction then
+        //         let effect = LCEffectObject:create(effName)
+        //         effect:setAutoPlay(false)
+        //         effect:setAutoDelete(false)
+        //         effect:play(effectAction)
+        //         effect:setPosition(this.pointArray[index].center)
+        //         if index==2 or index==5 or index==8 or index==11 or index==14 then
+        //             effect:setScale(this.midScale)
+        //         else
+        //             effect:setScale(this.sideScale)
+        //         end
+        //         this.topContainer:addChild(effect)
+        //         this.effectMap[index] = effect
+        //         this.callback(index, false)
+        //     end
+        // }
+    },
+
+    //hide all select lines
+    hideSelectedLine(){
+        for (var i = 0; i < this.lineNode.length; i++) {
+            this.lineNode[i].active = false
+        }
+    }
     
 });

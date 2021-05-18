@@ -92,6 +92,12 @@ let SlotConst = {
 		[13, 14, 15],
 	],
 
+	iconEffect : {
+		1   : "play1",    //eSlotConmonData.kWildItemType
+		10  : "play2",     //eSlotConmonData.kFruitsBar
+		3: "play4",   //bonus
+	},
+
 
 };
 
