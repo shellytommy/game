@@ -139,11 +139,16 @@ ryyl.baseclass.extend({
             return {};
         } 
 
-        let wildItemType = SlotConst.eSlotConmonData.kWildItemType
-        let scatterType  = SlotConst.eSlotConmonData.kSlotScatter
-        let defaultLines = SlotConst.LD_SlotLines ? SlotConst.LD_SlotLines : [];
-        let multipleList = SlotConst.LD_SlotMultiple ? SlotConst.LD_SlotMultiple : [];
+        let wildItemType = SlotConst.eSlotConmonData.kWildItemType;
+        let scatterType  = SlotConst.eSlotConmonData.kSlotScatter;
+        let defaultLines = SlotConst.LD_SlotLines;
+        let multipleList = SlotConst.LD_SlotMultiple;
         let winLines = [];
+
+        if(!defaultLines || defaultLines.length <= 0 || !multipleList || multipleList.length <= 0){
+            JS_ERROR("defaultLines or multipleList is null");
+            return;
+        }
 
         //lines
         if(linesWin > 0){
