@@ -5,7 +5,7 @@ window._Gloabal = {
 }
 
 let JS_LOG = function(...arg){ 
-    console.log("[HelloWorld]",...arg) ; 
+    console.log("[Update]",...arg) ; 
 }
 
 
@@ -47,9 +47,11 @@ cc.Class({
 
         // 复制包内模块到可读写路径下,避免首次加载模块时从远程完整拉取
         _G_moduleMag.execUnpackage(()=>{
-            JS_LOG("获取最新版本")
             _G_moduleMag.reqVersionInfo(()=>{ // 获取最新版本
-                this.reloadLobbyRoot() //loading lobby bundle
+                // this.reloadLobbyRoot() //loading lobby bundle
+                JS_LOG("切换登录场景")
+                //到登录场景
+                ryyl.emitter.emit("login.updateend");
             })
         })
 

@@ -3,7 +3,7 @@
   "uuid": "ce590f40-30e5-45b9-96ff-1e583241c9fc",
   "isBundle": true,
   "bundleName": "ABLobby",
-  "priority": "6",
+  "priority": "5",
   "compressionType": {
     "ios": "merge_all_json",
     "mac": "merge_all_json",
