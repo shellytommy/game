@@ -510,6 +510,9 @@
     "UpdatePrefab": {
       "__uuid__": "9f977808-3c08-4c03-8a83-bae1db0bcbf1"
     },
+    "LoginPrefab": {
+      "__uuid__": "bcbe5d9e-355f-49a6-9ab7-8239f2789f23"
+    },
     "_id": "57mF2FhzxDb7nKJZtmSBAV"
   }
 ]

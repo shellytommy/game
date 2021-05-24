@@ -6,21 +6,15 @@ let JS_LOG = function(...arg){
     cc.log("[LobbyRoot]",...arg) ; 
 }
 
-require("global");
-
 cc.Class({
     extends: cc.Component, 
     properties: {
-
-
 
     },
 
 
     initModule(){
     	JS_LOG("initModule")
-
-        initGlobal();
 
     },
 

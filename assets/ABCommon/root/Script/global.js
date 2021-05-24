@@ -10,6 +10,32 @@ window.reStartGame = function() {
     
 };
 
+window.reloadLobbyRoot = function(){
+
+    let loadAb = ["ABLobby"]
+    // loadAb = ["ABLobby", "ABSubGame1", "ABSubGame2"]
+    _G_moduleMag.hotUpdateMultiModule(loadAb,()=>{ // 更新模块到最新版本
+
+        _G_moduleMag.addModule("ABLobby", (moduleObj)=>{ // 加载模块
+
+            let abObj = moduleObj.getABObj()
+            
+            abObj.load('root/Scene/LobbyRoot', cc.Prefab, (err, prefab)=>{  // 使用模块资源 
+
+                // JS_LOG("load_lobby_prefab_:", JSON.stringify(err) )
+                if(this._lobbyRootNode){
+                    this._lobbyRootNode.destroy()
+                }
+                let lobbyRoot = cc.instantiate(prefab) 
+                this._lobbyRootNode = lobbyRoot
+                this.moduleLayer.addChild(lobbyRoot, 100)
+                lobbyRoot.getComponent("LobbyRoot").initModule()    
+
+            }) 
+        })
+    })
+};
+
 
 //定义一个深拷贝函数  接收目标target参数
 window.deepClone = function(target) {
@@ -110,6 +136,10 @@ window.initGlobal = function() {
     
     // let Toast = require("Toast");
     // ryyl.Toast = new Toast();
+
+
+    ryyl.i18n = ryyl.i18n || require('LanguageData');
+    ryyl.i18n.init("en");
     
     
 };
