@@ -16,19 +16,26 @@ ryyl.baseclass.extend({
         topContainer    : cc.Node,
         lineArrow       : cc.Node,
         lineDemo        : cc.Node,
+        lineKuang       : cc.Node,
         slotTableArrow  : [cc.SpriteFrame],
         slotTableLine   : [cc.SpriteFrame],
+        slotTableKuang  : [cc.SpriteFrame],
+        lineWin : {
+            default: null,
+            type: cc.AudioClip,
+        },
+        
 
     },
 
 
     onLoad(){
 
-        this.betLineNum   = SlotConst.eSlotConmonData.kSlotMinMultiPerLine;
+        this.SlotFruitLogic = require('SlotFruitLogic').getInstance();
         this.effectMap    = [];
         this.showLineNode = [];
         this.lineNode     = [];
-        this._state       = SlotConst.eSpinState.stop;
+        this.isShowResult = false
 
         this.arrowSize  = this.lineArrow.getContentSize();
         this.scrollSize = this.topContainer.getContentSize();
@@ -41,12 +48,14 @@ ryyl.baseclass.extend({
         ryyl.emitter.on(SlotConst.CTCEvent.initLayer,       this.initLayer,             this);
         ryyl.emitter.on(SlotConst.CTCEvent.selectLine,      this.changeSelectedLine,    this);
         ryyl.emitter.on(SlotConst.CTCEvent.onProcess,       this.onProcess,             this);
+        ryyl.emitter.on(SlotConst.CTCEvent.showWinLine,     this.resultLinesShow,       this);
     },
 
     unregisrterEvent(){
         ryyl.emitter.off(SlotConst.CTCEvent.initLayer,      this);
         ryyl.emitter.off(SlotConst.CTCEvent.selectLine,     this);
         ryyl.emitter.off(SlotConst.CTCEvent.onProcess,      this);
+        ryyl.emitter.off(SlotConst.CTCEvent.showWinLine,    this);
     },
 
     OnDestroy(){
@@ -59,28 +68,83 @@ ryyl.baseclass.extend({
 
         switch (_process) {
             case eSlotCallbackType.sendStart:
-                this._state  = SlotConst.eSpinState.spining;
                 this.hideSelectedLine();
                 break;
             case eSlotCallbackType.slotStop:
-                this._state  = SlotConst.eSpinState.stop;
                 break;
         }
 
     },
 
-    changeSelectedLine() {
-        if(this._state  == SlotConst.eSpinState.spining) {
-            JS_ERROR("slot spining");
+    changeSelectedLine(betLineNum) {
+        this.removeResultLineAndNode()
+        this.updateLines()
+    },
+
+    resultLinesShow(winLines, itemList, isAuto){
+        if(!winLines || winLines.length <= 0){
+            JS_ERROR('resultLinesShow winLines is null');
             return;
         }
 
-        this.betLineNum = (this.betLineNum + 1) % (SlotConst.eSlotConmonData.kSlotMaxMultiPerLine + 1);
-        if(this.betLineNum < SlotConst.eSlotConmonData.kSlotMinMultiPerLine) this.betLineNum = SlotConst.eSlotConmonData.kSlotMinMultiPerLine;
-        JS_ERROR("this.betLineNum = ", this.betLineNum);
+        ryyl.audio.playSoundEffect(this.lineWin);
 
-        this.removeResultLineAndNode()
-        this.updateLines()
+        this.isShowResult = true;
+
+        //show win select lines
+        let step1 = function(_winLines, _lineNode){
+            for (var i = 0; i < _winLines.length; i++) {
+                let lines = _winLines[i];
+                let node  = _lineNode[lines.index];
+
+                if(node) node.active = true;
+
+                let _items = lines.items;
+                for (var j = 0; j < _items.length; j++) {
+                    let index = _items[j]
+                    this.playIconEffect(index, itemList)
+                }
+            }
+        }.bind(this);
+
+        //winAnimation CCCallFuncN
+        let showTimes = 1
+        let nextShowCal = function(_winLines, _lineNode){
+            if(showTimes <= _winLines.length){
+                let winLineInfo = _winLines[showTimes];
+                let line        = _lineNode[winLineInfo.index];
+                if(line){
+                    line.active = true;
+                    line.runAction(cc.sequence(cc.delayTime(1), cc.hide()));
+                }
+            }
+
+            showTimes = showTimes + 1;
+            if(showTimes > _winLines.length){
+                showTimes = showTimes % (_winLines.length);
+                if(showTimes == 0) showTimes = 1;
+            }
+
+            if(this.isShowResult){
+                setTimeout(function(){ 
+                    nextShowCal(_winLines, _lineNode);
+                }.bind(this), SlotConst.showOneTime * 1000);
+            }  
+        }.bind(this);
+
+        step1(winLines, this.lineNode);
+
+        //win lines animations
+
+        setTimeout(function(){ 
+            if(!this.isShowResult) return;
+
+            this.hideSelectedLine();
+            this.drawShowLine(winLines);
+
+            if(!isAuto) nextShowCal(winLines, this.lineNode);
+        }.bind(this), SlotConst.showOneTime * 1000);
+
     },
 
     initLayer(data){
@@ -90,6 +154,8 @@ ryyl.baseclass.extend({
     },
 
     updateLines() {
+        JS_LOG("updateLines");
+
         //achieve all points
         let pointss = [];
         let defaultLines = SlotConst.LD_SlotLines;
@@ -97,7 +163,7 @@ ryyl.baseclass.extend({
         for (var i = 0; i < defaultLines.length; i++) {
             let item = [];
             let element = defaultLines[i];
-            JS_LOG(element);
+            // JS_LOG("updateLines i ", i, element);
             for (var j = 0; j < element.length; j++) {
                 let _te = element[j];
                 item[j] = this.pointArray[_te].center
@@ -105,10 +171,12 @@ ryyl.baseclass.extend({
             pointss[i] = item
         }
 
+        JS_LOG("updateLines pointss = ", pointss);
+
         //draw a select line
         let arrT  = this.slotTableArrow;
         let draws = function (lineNum){
-            JS_LOG('updateLines draws lineNum = ', lineNum);
+            // JS_LOG('updateLines draws lineNum = ', lineNum);
 
             let pointcpp = pointss[lineNum]
             if(!pointcpp) return;
@@ -149,10 +217,14 @@ ryyl.baseclass.extend({
             }
         }.bind(this)
 
+        JS_LOG("updateLines this.maxLine = ", this.maxLine);
+        JS_LOG("updateLines this.lineNode = ", this.lineNode);
+
         //update and creat all select lines
+        let _betLineNum = this.SlotFruitLogic.get("betLineNum");
         for (var i = 0; i < this.maxLine; i++) {
             let node = this.lineNode[i];
-            if(i <= this.betLineNum - 1){
+            if(i <= _betLineNum - 1){
                 if(node == null) draws(i);
                 else node.active = true;
             }
@@ -205,6 +277,7 @@ ryyl.baseclass.extend({
 
     //remove all result Show lines and actions
     removeResultLineAndNode(){
+        this.isShowResult = false;
 
         for (var i = 0; i < this.showLineNode.length; i++) {
             let v = this.showLineNode[i];
@@ -273,9 +346,148 @@ ryyl.baseclass.extend({
 
     //hide all select lines
     hideSelectedLine(){
+        JS_LOG("hideSelectedLine");
+
         for (var i = 0; i < this.lineNode.length; i++) {
             this.lineNode[i].active = false
         }
+    },
+
+    //draw show lines
+    drawShowLine(lines, visible){
+         JS_LOG("drawShowLine");
+
+        if(!lines) return;
+
+        if(visible == null) visible = false;
+
+        let arrT = this.slotTableArrow;
+
+        let draws = function(winLineInfo){
+
+            JS_LOG("drawShowLine draws winLineInfo = ", winLineInfo);
+
+            let index = winLineInfo.index
+            let items = winLineInfo.items
+
+            let pointss = [];
+            let defaultLines = SlotConst.LD_SlotLines;
+
+            let _vertical   = SlotConst.eSlotShap.vertical;
+            let _pointArray = this.pointArray;
+            for (var i = 0; i < _vertical; i++) {
+                let de = defaultLines[index][i];
+                let po = _pointArray[de];
+                if(!po)continue;
+                pointss.push(po);
+            }
+
+            let node = new cc.Node();
+            node.parent = this.topContainer;
+
+            if(arrT){
+                let child  = this.slotTableLine[index];
+                let childk = this.slotTableKuang[index];
+
+                _index = index
+                if(_index > arrT.length) _index = 1;
+
+                if(!pointss[0]) return;
+
+                let arrowSize   = this.arrowSize;
+                let pos         = cc.v2( -arrowSize.width/6, pointss[1].center.y)
+                let arrow       = cc.instantiate(this.lineArrow);
+                arrow.getComponent(cc.Sprite).spriteFrame = arrT[index];
+                arrow.parent = node;
+                arrow.setPosition(pos);
+                arrow.zIndex = 1;
+
+                let _line = this.drawLine(pos, pointss[1].left, child);
+                _line.parent = node;
+
+                let _len  = pointss.length;
+                let _iLen = items.length;
+                for (var i = 0; i < _len; i++) {
+                    if(i <= _iLen){
+                        let center = pointss[i].center;
+                        let nextPo = pointss[i+1];
+
+                        if(nextPo){
+                            let nextCenter = nextPo.center;
+                            let startPoint = pointss[i].right;
+
+                            if(nextCenter.y == center.y){
+                                startPoint      = pointss[i].right;
+                                nextCenter      = nextPo.left;
+                            }
+                            else if(nextCenter.y < center.y){
+                                startPoint      = pointss[i].rightDown;
+                                nextCenter      = nextPo.leftUp;
+                                nextCenter.y    = nextCenter.y;
+                                startPoint      = cc.v2(startPoint.x, startPoint.y);
+                            }
+                            else {
+                                startPoint      = pointss[i].rightUp;
+                                nextCenter      = nextPo.leftDown;
+                                nextCenter.y    = nextCenter.y;
+                                startPoint      = cc.v2(startPoint.x, startPoint.y);
+                            }
+
+                            if(i+1 > _iLen){
+                                nextCenter = nextPo.center
+                            }
+                            
+                            let _line2 = this.drawLine(startPoint, nextCenter, child);
+                            _line2.parent = node;
+                        }
+
+                        let kuang = cc.instantiate(this.lineKuang);
+                        kuang.getComponent(cc.Sprite).spriteFrame = childk;
+                        kuang:setContentSize(this.frameSize);
+                        kuang:setPosition(cc.v2(center.x, center.y));
+                        kuang.parent = node;
+                    }
+                    else {
+                        let _in = i+1;
+                        let pointPro = pointss[_in];
+                        if(!pointPro) break;
+
+                        let _line2 = this.drawLine(pointss[i].center, pointPro.center, child);
+                        _line2.parent = node; 
+                    }
+                }
+
+                let _pLen       = pointss.length - 1;
+                let lastPoint   = pointss[_pLen];
+                let startPoint  = lastPoint.center;
+                let extLen      = this.scrollSize.width / 10;
+                let endPoint    = cc.v2(startPoint.x + extLen, lastPoint.center.y);
+
+                if(items.length >= pointss.length) startPoint = lastPoint.right;
+
+                let _line3 = this.drawLine(startPoint, endPoint, child);
+                _line3.parent = node; 
+                node.active = visible;
+
+                //node:runAction(CCSequence:createWithTwoActions(CCDelayTime:create(1), CCHide:create()))
+                this.showLineNode[index] = node;
+            }
+        }
+
+        for (var i = 0; i < this.showLineNode.length; i++) {
+            let node = this.showLineNode[i];
+            if(!node) continue;
+            node:stopAllActions();
+            node:removeFromParentAndCleanup(true);
+        }
+     
+        this.showLineNode = [];
+
+        for (var i = 0; i < lines.length; i++) {
+            let winLineInfo = lines[i];
+            draws(winLineInfo);
+        }
+
     }
     
 });

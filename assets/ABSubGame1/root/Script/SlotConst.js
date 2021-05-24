@@ -2,9 +2,14 @@
 let SlotConst = {
 
 	CTCEvent:{
-        onProcess  : 'ccOnProcess',    //进度通知
-        initLayer  : 'initLayer',
-        selectLine : 'selectLine',
+		startGame	: "startGame",
+
+
+        onProcess  	: 'ccOnProcess',    //进度通知
+        initLayer  	: 'initLayer',
+        selectLine 	: 'selectLine',
+        showWinLine	: 'showWinLine',
+
     },
 
 	eSpinState : {
@@ -16,6 +21,7 @@ let SlotConst = {
 
 	opacity 		: 30,    //透明度
  	frameRate 		: 60,  //帧率
+ 	showOneTime		: 1.5, //每条线展示时间
 
  	itemNum 		: 9,
 
@@ -39,33 +45,32 @@ let SlotConst = {
 
     eSlotConmonData : {
 		maxPlayerNum 	: 5,
-		kSlotScatter 	: 11,
+		kSlotScatter 	: 10,
 		kSlotTournament : 9,
 		kSlotPlaceholder : -1,
 	    kSlotMaxMultiPerLine : 9,
 	    kSlotMinMultiPerLine : 1,
 
-		kMaxItemType 	: 11,
+		kMaxItemType 	: 10,
 		kMaxItemNum 	: 15,
-		kWildItemType 	: 1,
+		kWildItemType 	: 0,
 
 		kFruitsBarItems : [10],
 		kFruitsBar		: 10,
 		KFruitsScale	: 0.8,
-		kBonusCount		: 3,
 		
 	},
 
 	LD_SlotLines : [   //每条线坐标,目前9条线
-		[2,5,8,11,14],
-		[3,6,9,12,15],
 		[1,4,7,10,13],
-		[3,5,7,11,15],
-		[1,5,9,11,13],
-		[3,6,8,10,13],
-		[1,4,8,12,15],
-		[2,4,8,12,14],
-		[2,6,8,10,14],
+		[2,5,8,11,14],
+		[0,3,6,9,12],
+		[1,4,6,10,14],
+		[1,4,8,10,12],
+		[2,5,7,9,12],
+		[0,3,7,11,14],
+		[1,5,7,9,13],
+		[1,3,7,11,13],
 	],
 
 	LD_SlotMultiple : [  //默认元素奖励倍数配置
@@ -82,20 +87,20 @@ let SlotConst = {
 		[0,0,5,15,100],
 	],
 
-	bonus : 3, //bonus元素
+	bonus : 2, //bonus元素
 
 	eSlotBonusLines : [//免费摇条件 连续3列 (原bonus，现改为free )
-		[1, 2, 3],
-		[4, 5, 6],
-		[7, 8, 9],
-		[10, 11, 12],
-		[13, 14, 15],
+		[0, 1, 2],
+		[3, 4, 5],
+		[6, 7, 8],
+		[9, 10, 11],
+		[12, 13, 14],
 	],
 
 	iconEffect : {
 		1   : "play1",    //eSlotConmonData.kWildItemType
 		10  : "play2",     //eSlotConmonData.kFruitsBar
-		3: "play4",   //bonus
+		3	: "play4",   //bonus
 	},
 
 

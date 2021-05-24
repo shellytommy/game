@@ -27,11 +27,12 @@ ryyl.baseclass.extend({
     onLoad(){
         JS_LOG("SlotMachine");
 
+        this.SlotFruitLogic = require('SlotFruitLogic').getInstance();
+
         this._slotColGroup  = [];
         this.pointArray     = [];
         this._resultList    = [];
         this._size          = this.itemsNet.getContentSize();   //动画区域size
-        this._state         = SlotConst.eSpinState.stop;        //滚动状态还原
         this._oneRoundTime  = 0.18;
         this._eSlotShap     = SlotConst.eSlotShap;
         this._itemNum       = SlotConst.itemNum;
@@ -118,7 +119,7 @@ ryyl.baseclass.extend({
                 for (var row = 1; row <= horizontal; row++){
 
                     let icon = cc.instantiate(this.iconNode);
-                    let _ra = Math.floor(1 + Math.random() * itemNum);
+                    let _ra = Math.floor(Math.random() * itemNum);
                     icon.parent = groupLayer;
 
                     icon.getComponent(cc.Sprite).spriteFrame = spIcons[_ra];
@@ -150,7 +151,7 @@ ryyl.baseclass.extend({
         }
 
         let eSlotShap = this._eSlotShap;
-        this.pointArray[(col-1) * eSlotShap.horizontal + row] = kSlotTablePoints
+        this.pointArray[(col-1) * eSlotShap.horizontal + row - 1] = kSlotTablePoints
     },
 
     slotStopAnimation(recv, callback){
@@ -161,8 +162,8 @@ ryyl.baseclass.extend({
         this._stopCol  = 1;
         this._spinFinishCallback = callback;
 
-        if(this._state == eSpinState.spining){
-            this._state = eSpinState.stoping;
+        if(this.SlotFruitLogic.get("state") == eSpinState.spining){
+            this.SlotFruitLogic.set("state", eSpinState.stoping);
         }
     },
 
@@ -171,13 +172,13 @@ ryyl.baseclass.extend({
         let eSpinState          = SlotConst.eSpinState;
         let eSlotCallbackType   = SlotConst.eSlotCallbackType;
 
-        if(this._state != eSpinState.stop){
+        if(this.SlotFruitLogic.get("state") != eSpinState.stop){
             if(callback) callback(eSlotCallbackType.statusError);
             JS_ERROR("should not here");
             return;
         }
 
-        this._state = eSpinState.spining;
+        this.SlotFruitLogic.set("state", eSpinState.spining)
 
         let _resultList = this._resultList;
         for (var i = 0; i < _resultList.length; i++) { // show all icons which was invisible when showing line.
@@ -236,7 +237,7 @@ ryyl.baseclass.extend({
 
         let child = this._slotColGroup[col][invisibleIdx].children;
 
-        if (!(this._state == eSpinState.stoping && this._stopCol == col)) {
+        if (!(this.SlotFruitLogic.get("state") == eSpinState.stoping && this._stopCol == col)) {
             for (var row = 0; row <= horizontal; row++) {
                 let icon;
                 for (var i = 0; i < child.length; i++) {
@@ -269,7 +270,7 @@ ryyl.baseclass.extend({
             }
         }
 
-        if (this._state == eSpinState.stoping) {
+        if (this.SlotFruitLogic.get("state") == eSpinState.stoping) {
             ryyl.audio.playSoundEffect(this.audio_loop);
 
             if (this._stopCol == col){
@@ -312,8 +313,8 @@ ryyl.baseclass.extend({
 
                         this._stopCol = this._stopCol + 1;
 
-                        if(this._state == eSpinState.stoping && col == eSlotShap.vertical) {
-                            this._state = eSpinState.stop;
+                        if(this.SlotFruitLogic.get("state") == eSpinState.stoping && col == eSlotShap.vertical) {
+                            this.SlotFruitLogic.set("state", eSpinState.stop)
                             this.endCal(this._spinRecv);
                         }
                     }, this),
@@ -399,13 +400,13 @@ ryyl.baseclass.extend({
             }
             if(!icon) continue;
 
-            if (this._state == eSpinState.stoping && this._stopCol == col && this.itemList != null) {
+            if (this.SlotFruitLogic.get("state") == eSpinState.stoping && this._stopCol == col && this.itemList != null) {
                 let idx = (col-1)*eSlotShap.horizontal + row - 1;
                 frame = spIcons[this.itemList[idx]];
                 this._resultList[idx] = icon;
             }
             else{
-                let _ra = Math.floor(1 + Math.random() * this._itemNum);
+                let _ra = Math.floor(Math.random() * this._itemNum);
                 frame = spIcons[_ra];
             }
             
