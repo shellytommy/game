@@ -14,6 +14,8 @@ cc.Class({
         UpdatePrefab: cc.Prefab,
 
         LoginPrefab: cc.Prefab,
+
+        moduleLayer : cc.Node , 
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -26,9 +28,10 @@ cc.Class({
         //add update prefab
         let newPrefabLayer = cc.instantiate(this.UpdatePrefab);
         newPrefabLayer.parent = cc.director.getScene();
-        this.upPrefab = newPrefabLayer;
+        this._updatePrefab = newPrefabLayer;
 
         ryyl.emitter.on("login.updateend", this.openLogin, this);
+        ryyl.emitter.on("gotoLobby", this.reloadLobbyRoot, this);
 
 
         this.openLogin();
@@ -37,19 +40,49 @@ cc.Class({
 
     onDestory(){
         ryyl.emitter.off("login.updateend",this); 
+        ryyl.emitter.off("gotoLobby",this); 
     },
     
     openLogin() {
         JS_LOG("openLogin");
 
-        if(this.upPrefab) this.upPrefab.active = false;
+        if(this._updatePrefab) this._updatePrefab.active = false;
         
         let newPrefabLayer = cc.instantiate(this.LoginPrefab);
         newPrefabLayer.parent = cc.director.getScene();
+        this._loginPrefab = newPrefabLayer;
         
         // ryyl.logon.loginPomelo();
 
     },
+
+    reloadLobbyRoot(){
+
+        if(this._loginPrefab) this._loginPrefab.active = false;
+        
+        let loadAb = ["ABLobby"]
+        // loadAb = ["ABLobby", "ABSubGame1", "ABSubGame2"]
+        _G_moduleMag.hotUpdateMultiModule(loadAb,()=>{ // 更新模块到最新版本
+
+            _G_moduleMag.addModule("ABLobby", (moduleObj)=>{ // 加载模块
+
+                let abObj = moduleObj.getABObj()
+                
+                abObj.load('root/Scene/LobbyRoot', cc.Prefab, (err, prefab)=>{  // 使用模块资源 
+
+                    // JS_LOG("load_lobby_prefab_:", JSON.stringify(err) )
+                    if(this._lobbyRootNode){
+                        this._lobbyRootNode.destroy()
+                    }
+                    let lobbyRoot = cc.instantiate(prefab) 
+                    this._lobbyRootNode = lobbyRoot
+                    this.moduleLayer.addChild(lobbyRoot, 100)
+                    lobbyRoot.getComponent("LobbyRoot").initModule()    
+
+                }) 
+            })
+        })
+    }
 
     // update (dt) {},
 });

@@ -22,7 +22,7 @@ ryyl.baseclass.extend({
     },
     onLoad() {
         this._super();
-        
+
         this.registerEvent();
         this.phone_continue.interactable = false;
         this.otp_continue.interactable = false;
@@ -177,7 +177,7 @@ ryyl.baseclass.extend({
                 // this.loading();
                 // ryyl.logon.reqTouLogin();
 
-                reloadLobbyRoot() //loading lobby bundle
+                ryyl.emitter.emit("gotoLobby");
                 break;
             case "login_phone":
                 this.otpNode.active = true;
