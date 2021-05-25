@@ -35,7 +35,6 @@ ryyl.baseclass.extend({
         this.effectMap    = [];
         this.showLineNode = [];
         this.lineNode     = [];
-        this.isShowResult = false
 
         this.arrowSize  = this.lineArrow.getContentSize();
         this.scrollSize = this.topContainer.getContentSize();
@@ -81,15 +80,19 @@ ryyl.baseclass.extend({
         this.updateLines()
     },
 
-    resultLinesShow(winLines, itemList, isAuto){
+    resultLinesShow(data){
+        JS_LOG("resultLinesShow")
+
+        let winLines = data.winLines;
+        let itemList = data.itemList;
+        let eSpinState = SlotConst.eSpinState;
+
         if(!winLines || winLines.length <= 0){
             JS_ERROR('resultLinesShow winLines is null');
             return;
         }
 
         ryyl.audio.playSoundEffect(this.lineWin);
-
-        this.isShowResult = true;
 
         //show win select lines
         let step1 = function(_winLines, _lineNode){
@@ -108,41 +111,41 @@ ryyl.baseclass.extend({
         }.bind(this);
 
         //winAnimation CCCallFuncN
-        let showTimes = 1
+        let showTimes = 0;
         let nextShowCal = function(_winLines, _lineNode){
-            if(showTimes <= _winLines.length){
+            if(showTimes < _winLines.length){
                 let winLineInfo = _winLines[showTimes];
                 let line        = _lineNode[winLineInfo.index];
                 if(line){
                     line.active = true;
-                    line.runAction(cc.sequence(cc.delayTime(1), cc.hide()));
+                    line.runAction(cc.sequence(cc.delayTime(1), cc.callFunc(function() {line.active = false;}.bind(this))));
                 }
             }
 
             showTimes = showTimes + 1;
-            if(showTimes > _winLines.length){
+            if(showTimes >= _winLines.length){
                 showTimes = showTimes % (_winLines.length);
-                if(showTimes == 0) showTimes = 1;
             }
 
-            if(this.isShowResult){
-                setTimeout(function(){ 
-                    nextShowCal(_winLines, _lineNode);
-                }.bind(this), SlotConst.showOneTime * 1000);
-            }  
+            setTimeout(function(){ 
+                if(!this.resultWinLine) return;
+                nextShowCal(_winLines, _lineNode);
+            }.bind(this), SlotConst.showOneTime * 1000);
+
         }.bind(this);
 
         step1(winLines, this.lineNode);
 
         //win lines animations
-
         setTimeout(function(){ 
-            if(!this.isShowResult) return;
 
             this.hideSelectedLine();
             this.drawShowLine(winLines);
 
-            if(!isAuto) nextShowCal(winLines, this.lineNode);
+            this.SlotFruitLogic.set("state", eSpinState.stop);
+
+            this.resultWinLine = true;
+            nextShowCal(winLines, this.showLineNode);
         }.bind(this), SlotConst.showOneTime * 1000);
 
     },
@@ -217,19 +220,25 @@ ryyl.baseclass.extend({
             }
         }.bind(this)
 
-        JS_LOG("updateLines this.maxLine = ", this.maxLine);
-        JS_LOG("updateLines this.lineNode = ", this.lineNode);
+        // JS_LOG("updateLines this.maxLine = ", this.maxLine);
+        // JS_LOG("updateLines this.lineNode = ", this.lineNode);
 
         //update and creat all select lines
         let _betLineNum = this.SlotFruitLogic.get("betLineNum");
         for (var i = 0; i < this.maxLine; i++) {
             let node = this.lineNode[i];
-            if(i <= _betLineNum - 1){
-                if(node == null) draws(i);
-                else node.active = true;
+            if(i < _betLineNum){
+                if(node == null) {
+                    draws(i);
+                }
+                else {
+                    node.stopAllActions();
+                    node.active = true;
+                }
             }
-            else
+            else{
                 if(node != null)node.active = false;
+            }
             
         }
     },
@@ -256,40 +265,43 @@ ryyl.baseclass.extend({
         if(point1.x != point2.x){
             let degree = this.rad2deg(Math.atan((point2.y-point1.y)/(point2.x-point1.x)));
             if(point2.y != point1.y){
-                line.rotation = -degree;
+                line.angle = degree;
                 contendSizeX  = Math.sqrt(Math.pow(point2.y-point1.y, 2) + Math.pow(point2.x-point1.x, 2)) + 1.5;  //Math.pow(point2.x-point1.x, 2) 3的二次方
             }
         }
         else{
             contendSizeX = Math.sqrt(Math.pow(point2.y-point1.y, 2) + Math.pow(point2.x-point1.x, 2)) + 1.5
             if(point2.y > point1.y) 
-                line.rotation = -90;
+                line.angle = 90;
             else if(point2.y < point1.y)
-                line.rotation = 90;
+                line.angle = -90;
 
         }
 
         line.setContentSize(cc.size(contendSizeX, 7));
         line.setPosition(point1);
 
-        return line
+        return line;
     },
 
     //remove all result Show lines and actions
     removeResultLineAndNode(){
-        this.isShowResult = false;
 
         for (var i = 0; i < this.showLineNode.length; i++) {
             let v = this.showLineNode[i];
-            v:stopAllActions()
-            v:removeFromParentAndCleanup(true)
+            if(!v)continue;
+            v.stopAllActions()
+            v.removeFromParent()
         }
 
         for (var i = 0; i < this.effectMap.length; i++) {
             let effect = this.effectMap[i];
-            effect:removeFromParentAndCleanup(true)
+            if(!effect) continue;
+            effect.removeFromParent()
             // this.callback(i, true)
         }
+
+        this.resultWinLine = false;
 
         this.effectMap      = [];
         this.showLineNode   = [];
@@ -348,8 +360,10 @@ ryyl.baseclass.extend({
     hideSelectedLine(){
         JS_LOG("hideSelectedLine");
 
-        for (var i = 0; i < this.lineNode.length; i++) {
-            this.lineNode[i].active = false
+        let _lineNode = this.lineNode;
+        if(!_lineNode) return;
+        for (var i = 0; i < _lineNode.length; i++) {
+            if(_lineNode[i])_lineNode[i].active = false
         }
     },
 
@@ -362,6 +376,8 @@ ryyl.baseclass.extend({
         if(visible == null) visible = false;
 
         let arrT = this.slotTableArrow;
+
+        // JS_LOG("drawShowLine 1111111");
 
         let draws = function(winLineInfo){
 
@@ -378,11 +394,13 @@ ryyl.baseclass.extend({
             for (var i = 0; i < _vertical; i++) {
                 let de = defaultLines[index][i];
                 let po = _pointArray[de];
-                if(!po)continue;
+                if(!po) continue;
                 pointss.push(po);
             }
 
             let node = new cc.Node();
+            node.x = -this.scrollSize.width / 2;
+            node.y = -this.scrollSize.height / 2;
             node.parent = this.topContainer;
 
             if(arrT){
@@ -395,14 +413,14 @@ ryyl.baseclass.extend({
                 if(!pointss[0]) return;
 
                 let arrowSize   = this.arrowSize;
-                let pos         = cc.v2( -arrowSize.width/6, pointss[1].center.y)
+                let pos         = cc.v2( -arrowSize.width/6, pointss[0].center.y)
                 let arrow       = cc.instantiate(this.lineArrow);
                 arrow.getComponent(cc.Sprite).spriteFrame = arrT[index];
                 arrow.parent = node;
                 arrow.setPosition(pos);
                 arrow.zIndex = 1;
 
-                let _line = this.drawLine(pos, pointss[1].left, child);
+                let _line = this.drawLine(pos, pointss[0].left, child);
                 _line.parent = node;
 
                 let _len  = pointss.length;
@@ -443,8 +461,7 @@ ryyl.baseclass.extend({
 
                         let kuang = cc.instantiate(this.lineKuang);
                         kuang.getComponent(cc.Sprite).spriteFrame = childk;
-                        kuang:setContentSize(this.frameSize);
-                        kuang:setPosition(cc.v2(center.x, center.y));
+                        kuang.setPosition(cc.v2(center.x, center.y));
                         kuang.parent = node;
                     }
                     else {
@@ -472,16 +489,20 @@ ryyl.baseclass.extend({
                 //node:runAction(CCSequence:createWithTwoActions(CCDelayTime:create(1), CCHide:create()))
                 this.showLineNode[index] = node;
             }
-        }
+        }.bind(this);
 
-        for (var i = 0; i < this.showLineNode.length; i++) {
-            let node = this.showLineNode[i];
+
+        let _showLineNode = this.showLineNode;
+        if(!_showLineNode) _showLineNode = [];
+        for (var i = 0; i < _showLineNode.length; i++) {
+            let node = _showLineNode[i];
             if(!node) continue;
-            node:stopAllActions();
-            node:removeFromParentAndCleanup(true);
+            node.stopAllActions();
+            node.removeFromParent();
         }
      
         this.showLineNode = [];
+
 
         for (var i = 0; i < lines.length; i++) {
             let winLineInfo = lines[i];

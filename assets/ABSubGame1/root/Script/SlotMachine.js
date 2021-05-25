@@ -223,10 +223,12 @@ ryyl.baseclass.extend({
 
     rolling(col){
 
+        let _invisibleGroup = this._invisibleGroup;
+        if(!_invisibleGroup) return;
         let eSlotShap       = this._eSlotShap;
-        let visibleIdx      = this._invisibleGroup[col];
+        let visibleIdx      = _invisibleGroup[col];
         let horizontal      = eSlotShap.horizontal;
-        let invisibleIdx    = this._invisibleGroup[col];
+        let invisibleIdx    = _invisibleGroup[col];
         let eSpinState      = SlotConst.eSpinState;
 
         this.changeInvisibleGroup(col);
@@ -314,7 +316,7 @@ ryyl.baseclass.extend({
                         this._stopCol = this._stopCol + 1;
 
                         if(this.SlotFruitLogic.get("state") == eSpinState.stoping && col == eSlotShap.vertical) {
-                            this.SlotFruitLogic.set("state", eSpinState.stop)
+                            this.SlotFruitLogic.set("state", eSpinState.result)
                             this.endCal(this._spinRecv);
                         }
                     }, this),
@@ -410,7 +412,6 @@ ryyl.baseclass.extend({
                 frame = spIcons[_ra];
             }
             
-
             icon.getComponent(cc.Sprite).spriteFrame = frame;
         }
     },

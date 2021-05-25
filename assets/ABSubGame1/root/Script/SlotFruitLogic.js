@@ -34,8 +34,9 @@ fruit.unregisterEvent = function(){
 fruit.selectLine = function (){
     JS_LOG("selectLine");
 
-    if(this.state  == SlotConst.eSpinState.spining) {
+    if(this.state  != SlotConst.eSpinState.stop) {
         JS_ERROR("selectLine slot spining");
+        return;
     }
 
 
@@ -55,7 +56,7 @@ fruit.startGame = function (){
     setTimeout(()=>{ 
         let spinRecv = {
             status      : 0,
-            itemList    : [2, 10, 8, 2, 6, 5, 2, 3, 2, 1, 1, 8, 7, 5, 8],//[9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 1, 8, 7, 5, 8],
+            itemList    : [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],//[9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 1, 8, 7, 5, 8],
             scatterWin  : 0,
             linesWin    : 20,
             bonusFree   : 0,

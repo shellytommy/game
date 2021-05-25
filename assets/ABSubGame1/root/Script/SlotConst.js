@@ -16,12 +16,12 @@ let SlotConst = {
 		stop 		: 1,
 		spining 	: 2,
 		stoping 	: 3,
-		spinError 	: 4,
+		result 		: 4,
 	},
 
 	opacity 		: 30,    //透明度
  	frameRate 		: 60,  //帧率
- 	showOneTime		: 1.5, //每条线展示时间
+ 	showOneTime		: 1.2, //每条线展示时间
 
  	itemNum 		: 9,
 
