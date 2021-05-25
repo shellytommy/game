@@ -45,7 +45,7 @@ let SlotConst = {
 
     eSlotConmonData : {
 		maxPlayerNum 	: 5,
-		kSlotScatter 	: 10,
+		
 		kSlotTournament : 9,
 		kSlotPlaceholder : -1,
 	    kSlotMaxMultiPerLine : 9,
@@ -53,12 +53,11 @@ let SlotConst = {
 
 		kMaxItemType 	: 10,
 		kMaxItemNum 	: 15,
-		kWildItemType 	: 0,
 
-		kFruitsBarItems : [10],
-		kFruitsBar		: 10,
-		KFruitsScale	: 0.8,
-		
+		kWildItemType 	: 0,
+		bonus : 2, //bonus元素
+		kSlotScatter 	: 10,
+
 	},
 
 	LD_SlotLines : [   //每条线坐标,目前9条线
@@ -87,7 +86,7 @@ let SlotConst = {
 		[0,0,5,15,100],
 	],
 
-	bonus : 2, //bonus元素
+	
 
 	eSlotBonusLines : [//免费摇条件 连续3列 (原bonus，现改为free )
 		[0, 1, 2],
@@ -98,9 +97,9 @@ let SlotConst = {
 	],
 
 	iconEffect : {
-		1   : "play1",    //eSlotConmonData.kWildItemType
-		10  : "play2",     //eSlotConmonData.kFruitsBar
-		3	: "play4",   //bonus
+		0   : "play1",    	//eSlotConmonData.kWildItemType
+		9   : "play2",     	//eSlotConmonData.kFruitsBar
+		2	: "play4",   	//bonus
 	},
 
 

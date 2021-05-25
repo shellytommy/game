@@ -56,7 +56,7 @@ fruit.startGame = function (){
     setTimeout(()=>{ 
         let spinRecv = {
             status      : 0,
-            itemList    : [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],//[9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 1, 8, 7, 5, 8],
+            itemList    : [3, 3, 3, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],//[9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 1, 8, 7, 5, 8],
             scatterWin  : 0,
             linesWin    : 20,
             bonusFree   : 0,
@@ -108,18 +108,17 @@ fruit.resultShow = function (slotSpanRev) {
 
     JS_LOG("resultShow winInfo = ", winInfo);
 
-    if(winLines && winLines.length > 0){
-        ryyl.emitter.emit(SlotConst.CTCEvent.showWinLine, {winLines: winLines, itemList: itemList});
-    }
-
     //scatter Animation
     if(scatterWin && scatterWin.length > 0){
         // this.slotLineLayer.resultScatterShow(scatter, itemList)
     }
-
    
     if(bonusFree > 0 && winBouns && winBouns.length > 0){
         // this.slotLineLayer.resultBonusShow(winBouns, itemList)
+    }
+
+    if(winLines && winLines.length > 0){
+        ryyl.emitter.emit(SlotConst.CTCEvent.showWinLine, {winLines: winLines, itemList: itemList});
     }
 
 };
@@ -159,10 +158,13 @@ fruit.getWinInfo = function(itemList, linesWin){
             for (var j = 0; j < lineIndexs.length; j++) {
                 let index = lineIndexs[j];
                 let thisItemType = itemList[index]
-                if(thisItemType == scatterType || thisItemType <= 0) break;
+                if(thisItemType == scatterType || thisItemType < 0) break;
 
-                if (!this.isEqualWild(thisItemType)){
-                    if(itemType == -1)
+                // JS_LOG("j", j);
+                // JS_LOG("thisItemType", thisItemType);
+
+                if (thisItemType != wildItemType){
+                    if(itemType == -1 || itemType == wildItemType)
                         itemType = thisItemType;
                     else
                         if(thisItemType != itemType) break;
@@ -171,7 +173,7 @@ fruit.getWinInfo = function(itemList, linesWin){
                 aWinLine.items.push(index);
             }
 
-            // JS_LOG("aWinLine", aWinLine);
+            JS_LOG("aWinLine", aWinLine);
 
             let sameNum = aWinLine.items.length - 1;
             aWinLine.itemType = itemType
@@ -200,13 +202,6 @@ fruit.getWinInfo = function(itemList, linesWin){
     return {winLines:winLines, winScatters:scatters, winBouns:winBouns};
 }
 
-fruit.isEqualWild = function(itemType){
-    let wildItemType = SlotConst.eSlotConmonData.kWildItemType;
-    if(wildItemType && itemType && itemType == wildItemType) return true;
-
-    return false
-};
-
 fruit.getScatter = function(itemList){
     let winScatters     = [];
     let scatterType     = SlotConst.eSlotConmonData.kSlotScatter
@@ -225,7 +220,7 @@ fruit.getScatter = function(itemList){
 };
 
 fruit.getBonusInfo = function(_itemList){
-    let bonus       = SlotConst.bonus;
+    let bonus       = SlotConst.eSlotConmonData.bonus;
     let bonusLines  = SlotConst.eSlotBonusLines;
     let itemList    = _itemList;
     let ret         = [];

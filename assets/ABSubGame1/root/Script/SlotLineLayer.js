@@ -152,6 +152,8 @@ ryyl.baseclass.extend({
 
     initLayer(data){
         this.pointArray = data.pointArray;
+        this.spIcons    = data.spIcons; 
+        this.iconNode   = data.iconNode;
         JS_LOG("this.pointArray = ", this.pointArray);
         this.updateLines();
     },
@@ -329,31 +331,34 @@ ryyl.baseclass.extend({
             return;
         }
 
-        // let _eff = this.effectMap[index];
-        // if(!_eff){
-        //     let iconIndex = itemList[index];
-        //     if (iconIndex == SlotConst.bonus && !isBonus) return;
+        // let iconIndex = itemList[index];
 
-        //     let effMap  = this.iconEffect.map or {}
-        //     let effName = this.iconEffect.effectName
-        //     let effectAction = effMap[iconIndex]
+        // let addEffIcon = function(_iconIndex, _index){
+        //     let icon = cc.instantiate(this.iconNode);
+        //     icon.getComponent(cc.Sprite).spriteFrame = this.spIcons[_iconIndex];
+        //     icon.position = this.pointArray[_index].center;
+        //     icon.parent   = this.topContainer;
 
-        //     if effName and effectAction then
-        //         let effect = LCEffectObject:create(effName)
-        //         effect:setAutoPlay(false)
-        //         effect:setAutoDelete(false)
-        //         effect:play(effectAction)
-        //         effect:setPosition(this.pointArray[index].center)
-        //         if index==2 or index==5 or index==8 or index==11 or index==14 then
-        //             effect:setScale(this.midScale)
-        //         else
-        //             effect:setScale(this.sideScale)
-        //         end
-        //         this.topContainer:addChild(effect)
-        //         this.effectMap[index] = effect
-        //         this.callback(index, false)
-        //     end
+        //     // if(index == 1 || index == 4 || index == 7 || index == 10 || index == 13)
+        //     //     icon.scale = this.midScale;
+        //     // else
+        //     //     icon.scale = this.sideScale;
+            
+        //     this.effectMap[_index] = icon;
+        //     return icon;
+        // }.bind(this)
+
+        // if(iconIndex == SlotConst.eSlotConmonData.kWildItemType){
+        //     let _icon = addEffIcon(iconIndex, index, iconNode);
+
         // }
+        // else if(iconIndex == SlotConst.eSlotConmonData.bonus && isBonus){
+
+        // }
+        // else if(iconIndex == SlotConst.eSlotConmonData.kSlotScatter){
+            
+        // }
+                
     },
 
     //hide all select lines
@@ -369,7 +374,7 @@ ryyl.baseclass.extend({
 
     //draw show lines
     drawShowLine(lines, visible){
-         JS_LOG("drawShowLine");
+         JS_LOG("drawShowLine lines = ", lines);
 
         if(!lines) return;
 
@@ -393,8 +398,9 @@ ryyl.baseclass.extend({
             let _pointArray = this.pointArray;
             for (var i = 0; i < _vertical; i++) {
                 let de = defaultLines[index][i];
+                if(de == null) continue;
                 let po = _pointArray[de];
-                if(!po) continue;
+                if(po == null) continue;
                 pointss.push(po);
             }
 
@@ -407,8 +413,8 @@ ryyl.baseclass.extend({
                 let child  = this.slotTableLine[index];
                 let childk = this.slotTableKuang[index];
 
-                _index = index
-                if(_index > arrT.length) _index = 1;
+                // _index = index
+                // if(_index > arrT.length) _index = 1;
 
                 if(!pointss[0]) return;
 
