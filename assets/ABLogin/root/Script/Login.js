@@ -59,28 +59,24 @@ cc.Class({
 
         if(this._loginPrefab) this._loginPrefab.active = false;
         
-        let loadAb = ["ABLobby"]
-        // loadAb = ["ABLobby", "ABSubGame1", "ABSubGame2"]
-        _G_moduleMag.hotUpdateMultiModule(loadAb,()=>{ // 更新模块到最新版本
+        _G_moduleMag.addModule("ABLobby", (moduleObj)=>{ // 加载模块
 
-            _G_moduleMag.addModule("ABLobby", (moduleObj)=>{ // 加载模块
+            let abObj = moduleObj.getABObj();
+        
+            abObj.load('root/Scene/LobbyRoot', cc.Prefab, (err, prefab)=>{  // 使用模块资源 
 
-                let abObj = moduleObj.getABObj()
-                
-                abObj.load('root/Scene/LobbyRoot', cc.Prefab, (err, prefab)=>{  // 使用模块资源 
+                // JS_LOG("load_lobby_prefab_:", JSON.stringify(err) )
+                if(this._lobbyRootNode){
+                    this._lobbyRootNode.destroy()
+                }
+                let lobbyRoot = cc.instantiate(prefab) 
+                this._lobbyRootNode = lobbyRoot
+                this.moduleLayer.addChild(lobbyRoot, 100)
+                lobbyRoot.getComponent("LobbyRoot").initModule()    
 
-                    // JS_LOG("load_lobby_prefab_:", JSON.stringify(err) )
-                    if(this._lobbyRootNode){
-                        this._lobbyRootNode.destroy()
-                    }
-                    let lobbyRoot = cc.instantiate(prefab) 
-                    this._lobbyRootNode = lobbyRoot
-                    this.moduleLayer.addChild(lobbyRoot, 100)
-                    lobbyRoot.getComponent("LobbyRoot").initModule()    
-
-                }) 
-            })
+            }) 
         })
+       
     }
 
     // update (dt) {},

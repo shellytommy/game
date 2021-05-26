@@ -59,7 +59,7 @@ cc.Class({
     },
 
     reloadLoginRoot(){
-        let loadAb = ["ABLogin"]
+        let loadAb = ['ABCommon', 'ABLogin', 'ABLobby']
 
         _G_moduleMag.hotUpdateMultiModule(loadAb,()=>{ // 更新模块到最新版本
             JS_LOG("loadAb:",loadAb)
