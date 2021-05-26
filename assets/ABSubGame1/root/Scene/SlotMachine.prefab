@@ -255,7 +255,7 @@
     "_enabled": true,
     "_materials": [
       {
-        "__uuid__": "bf0f3260-413a-492e-bd3d-e6359bff54fb"
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
       }
     ],
     "_srcBlendFactor": 770,
@@ -285,12 +285,16 @@
       "__id__": 5
     },
     "_enabled": true,
-    "_defaultClip": {
-      "__uuid__": "45993596-604e-4d14-b228-3f74f4b8f44d"
-    },
+    "_defaultClip": null,
     "_clips": [
       {
         "__uuid__": "45993596-604e-4d14-b228-3f74f4b8f44d"
+      },
+      {
+        "__uuid__": "4bff715d-4844-4318-be6a-9700a0ad3bbb"
+      },
+      {
+        "__uuid__": "112b4978-5023-41bf-8b47-a59ac5c6c730"
       }
     ],
     "playOnLoad": false,
@@ -406,6 +410,9 @@
         "__uuid__": "17065fb1-7134-417b-8bee-66520161fbcf"
       }
     ],
+    "liuguan": {
+      "__uuid__": "bf0f3260-413a-492e-bd3d-e6359bff54fb"
+    },
     "_id": ""
   },
   {

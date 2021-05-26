@@ -24,7 +24,7 @@ ryyl.baseclass.extend({
             default: null,
             type: cc.AudioClip,
         },
-        
+        liuguan: cc.Material,
 
     },
 
@@ -48,6 +48,7 @@ ryyl.baseclass.extend({
         ryyl.emitter.on(SlotConst.CTCEvent.selectLine,      this.changeSelectedLine,    this);
         ryyl.emitter.on(SlotConst.CTCEvent.onProcess,       this.onProcess,             this);
         ryyl.emitter.on(SlotConst.CTCEvent.showWinLine,     this.resultLinesShow,       this);
+        ryyl.emitter.on(SlotConst.CTCEvent.showFreeLine,    this.showFreeLine,          this);
     },
 
     unregisrterEvent(){
@@ -55,6 +56,7 @@ ryyl.baseclass.extend({
         ryyl.emitter.off(SlotConst.CTCEvent.selectLine,     this);
         ryyl.emitter.off(SlotConst.CTCEvent.onProcess,      this);
         ryyl.emitter.off(SlotConst.CTCEvent.showWinLine,    this);
+        ryyl.emitter.off(SlotConst.CTCEvent.showFreeLine,   this);
     },
 
     OnDestroy(){
@@ -155,6 +157,15 @@ ryyl.baseclass.extend({
             nextShowCal(winLines, this.showLineNode);
         }.bind(this), SlotConst.showOneTime * 1000);
 
+    },
+
+    showFreeLine(data){
+        JS_LOG("showFreeLine");
+
+        let _winBouns = data.winBouns;
+        let _itemList = data.itemList;
+
+        this.resultBonusShow(_winBouns, _itemList);
     },
 
     initLayer(data){
@@ -317,10 +328,22 @@ ryyl.baseclass.extend({
     },
 
     resultBonusShow(bonusList, itemList){
-        this.resultScatterShow(bonusList, itemList, true)
+        JS_LOG("resultBonusShow ", bonusList);
+
+        for (var i = 0; i < bonusList.length; i++) {
+            let v = bonusList[i];
+            let t = [];
+            for (var j = 0; j < v.length; j++) {
+                t.push(v[j].index);
+            }
+            this.resultScatterShow(t, itemList, true)
+        }
+        
     },
 
     resultScatterShow(scatterList, itemList, isBonus){
+        JS_LOG("resultScatterShow scatterList = ", scatterList);
+
         if(!scatterList){
             JS_ERROR('resultScatterShow scatterList null');
             return;
@@ -353,25 +376,25 @@ ryyl.baseclass.extend({
             }
 
             this.effectMap[_index] = icon;
-            return icon.getComponent(cc.Animation);
+            return icon;
         }.bind(this)
 
-        if(iconIndex == SlotConst.eSlotConmonData.kWildItemType){
-            let _effect  = addEffIcon(iconIndex, index);
-            let _effName = SlotConst.iconEffect[iconIndex];
 
-            if(_effect && _effName) {
-                let animState = _effect.play(_effName);
-                animState.repeatCount = 1;
-            }
-        }
-        else if(iconIndex == SlotConst.eSlotConmonData.bonus && isBonus){
+        let _effName = SlotConst.iconEffect[iconIndex];
 
-        }
-        else if(iconIndex == SlotConst.eSlotConmonData.kSlotScatter){
+        JS_LOG("iconIndex ", iconIndex);
+        JS_LOG("_effName ", _effName);
+
+        if(_effName){
+            let _icon     = addEffIcon(iconIndex, index);
+            let _effect   = _icon.getComponent(cc.Animation);
+            let animState = _effect.play(_effName);
+            animState.repeatCount = 1;
+
+            this.playLiuGuang(_icon, 0.8);
             
         }
-                
+        
     },
 
     //hide all select lines
@@ -532,6 +555,19 @@ ryyl.baseclass.extend({
             draws(winLineInfo);
         }
 
-    }
+    },
+
+    playLiuGuang(node, time){
+        node.getComponent(cc.Sprite).setMaterial(0, this.liuguan);
+
+        let action = cc.sequence(
+            cc.delayTime(time),
+            cc.callFunc(function(){
+                node.getComponent(cc.Sprite).setMaterial(0, cc.Material.getBuiltinMaterial('2d-sprite'))
+
+            }, this),
+        )
+        node.runAction(action);
+    },
     
 });

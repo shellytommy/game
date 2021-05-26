@@ -56,10 +56,10 @@ fruit.startGame = function (){
     setTimeout(()=>{ 
         let spinRecv = {
             status      : 0,
-            itemList    : [3, 3, 3, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],//[9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 1, 8, 7, 5, 8],
+            itemList    : [2, 2, 2, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],//[9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 1, 8, 7, 5, 8],
             scatterWin  : 0,
             linesWin    : 20,
-            bonusFree   : 0,
+            bonusFree   : 10,
         }
 
         let _cal = function(...arg){
@@ -108,18 +108,36 @@ fruit.resultShow = function (slotSpanRev) {
 
     JS_LOG("resultShow winInfo = ", winInfo);
 
+    let _time = 1;
     //scatter Animation
     if(scatterWin && scatterWin.length > 0){
         // this.slotLineLayer.resultScatterShow(scatter, itemList)
+        // ryyl.emitter.emit(SlotConst.CTCEvent.showFreeLine, {winLines: winLines, itemList: itemList});
+
+        _time = _time + 1000;
     }
    
     if(bonusFree > 0 && winBouns && winBouns.length > 0){
-        // this.slotLineLayer.resultBonusShow(winBouns, itemList)
+        
+        setTimeout(()=>{ 
+            ryyl.emitter.emit(SlotConst.CTCEvent.showFreeLine, {winBouns: winBouns, itemList: itemList});
+        }, _time);
+
+        _time = _time + 1000;
     }
 
     if(winLines && winLines.length > 0){
-        ryyl.emitter.emit(SlotConst.CTCEvent.showWinLine, {winLines: winLines, itemList: itemList});
+        
+        setTimeout(()=>{ 
+            ryyl.emitter.emit(SlotConst.CTCEvent.showWinLine, {winLines: winLines, itemList: itemList});
+        }, _time);
+
+        _time = _time + 1000;
     }
+
+    setTimeout(()=>{ 
+        this.state = SlotConst.eSpinState.stop;
+    }, _time);
 
 };
 

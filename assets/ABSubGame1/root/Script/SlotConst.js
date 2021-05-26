@@ -9,6 +9,7 @@ let SlotConst = {
         initLayer  	: 'initLayer',
         selectLine 	: 'selectLine',
         showWinLine	: 'showWinLine',
+        showFreeLine: 'showFreeLine',
 
     },
 
@@ -98,8 +99,8 @@ let SlotConst = {
 
 	iconEffect : {
 		0   : "wild",    	//eSlotConmonData.kWildItemType
-		9   : "play2",     	//eSlotConmonData.kFruitsBar
-		2	: "play4",   	//bonus
+		10  : "scatter",    //eSlotConmonData.kFruitsBar
+		2	: "bonus",   	//bonus
 	},
 
 

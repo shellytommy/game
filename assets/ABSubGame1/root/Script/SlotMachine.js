@@ -22,6 +22,8 @@ ryyl.baseclass.extend({
         },
         audio_stop  : [cc.AudioClip],
 
+        liuguan: cc.Material,
+
     },
 
     onLoad(){
@@ -126,6 +128,8 @@ ryyl.baseclass.extend({
                     
                     icon.tags = row;
                     this.setIcon(icon, col, row, gap, iconSize, group)
+
+                    this.playLiuGuang(icon, 0.8);
                 }
 
                 this._slotColGroup[col][group] = groupLayer
@@ -418,11 +422,19 @@ ryyl.baseclass.extend({
 
 
     
-    
+    playLiuGuang(node, time){
+        node.getComponent(cc.Sprite).setMaterial(0, this.liuguan);
+
+        let action = cc.sequence(
+            cc.delayTime(time),
+            cc.callFunc(function(){
+                node.getComponent(cc.Sprite).setMaterial(0, cc.Material.getBuiltinMaterial('2d-sprite'))
+
+            }, this),
+        )
+        node.runAction(action);
+    },
 
     
-
-    
-
 
 });
