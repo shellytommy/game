@@ -11,7 +11,7 @@ cc.Class({
 
     properties: {
         
-        UpdatePrefab: cc.Prefab,
+        // UpdatePrefab: cc.Prefab,
 
         LoginPrefab: cc.Prefab,
 
@@ -26,11 +26,10 @@ cc.Class({
         initGlobal();
 
         //add update prefab
-        let newPrefabLayer = cc.instantiate(this.UpdatePrefab);
-        newPrefabLayer.parent = cc.director.getScene();
-        this._updatePrefab = newPrefabLayer;
+        // let newPrefabLayer = cc.instantiate(this.UpdatePrefab);
+        // newPrefabLayer.parent = cc.director.getScene();
+        // this._updatePrefab = newPrefabLayer;
 
-        ryyl.emitter.on("login.updateend", this.openLogin, this);
         ryyl.emitter.on("gotoLobby", this.reloadLobbyRoot, this);
 
 
@@ -46,7 +45,7 @@ cc.Class({
     openLogin() {
         JS_LOG("openLogin");
 
-        if(this._updatePrefab) this._updatePrefab.active = false;
+        // if(this._updatePrefab) this._updatePrefab.active = false;
         
         let newPrefabLayer = cc.instantiate(this.LoginPrefab);
         newPrefabLayer.parent = cc.director.getScene();

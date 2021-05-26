@@ -49,7 +49,6 @@ cc.Class({
         _G_moduleMag.execUnpackage(()=>{
             _G_moduleMag.reqVersionInfo(()=>{ // 获取最新版本
                 // //到登录场景
-                // ryyl.emitter.emit("login.updateend");
                 this.reloadLoginRoot();
             })
         })
@@ -64,23 +63,15 @@ cc.Class({
 
         _G_moduleMag.hotUpdateMultiModule(loadAb,()=>{ // 更新模块到最新版本
             JS_LOG("loadAb:",loadAb)
-            // _G_moduleMag.addModule("ABLogin", (moduleObj)=>{ // 加载模块
+            _G_moduleMag.addModule("ABLogin", (moduleObj)=>{ // 加载模块
 
-            //     let abObj = moduleObj.getABObj()
+                let abObj = moduleObj.getABObj()
+
+                abObj.loadScene('root/Scene/Login', function (err, scene) {
+                    cc.director.runScene(scene);
+                });
                 
-            //     abObj.load('root/Scene/LobbyRoot', cc.Prefab, (err, prefab)=>{  // 使用模块资源 
-
-            //         JS_LOG("load_lobby_prefab_:", JSON.stringify(err) )
-            //         if(this._lobbyRootNode){
-            //             this._lobbyRootNode.destroy()
-            //         }
-            //         let lobbyRoot = cc.instantiate(prefab) 
-            //         this._lobbyRootNode = lobbyRoot
-            //         this.moduleLayer.addChild(lobbyRoot, 100)
-            //         lobbyRoot.getComponent("LobbyRoot").initModule()    
-    
-            //     }) 
-            // })
+            })
         })
 
     },
