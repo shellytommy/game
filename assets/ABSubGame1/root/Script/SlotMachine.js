@@ -60,7 +60,7 @@ ryyl.baseclass.extend({
         this.itemsNet.stopAllActions();
         this.itemsNet.removeAllChildren();
         this.setUpView(this.itemsNet);
-        ryyl.emitter.emit(SlotConst.CTCEvent.initLayer, {pointArray: this.pointArray, spIcons: this.spIcons, siconNode: this.iconNode});
+        ryyl.emitter.emit(SlotConst.CTCEvent.initLayer, {pointArray: this.pointArray, spIcons: this.spIcons, iconNode: this.iconNode});
     },
 
     OnDestroy(){

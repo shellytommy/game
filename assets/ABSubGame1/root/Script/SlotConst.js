@@ -97,7 +97,7 @@ let SlotConst = {
 	],
 
 	iconEffect : {
-		0   : "play1",    	//eSlotConmonData.kWildItemType
+		0   : "wild",    	//eSlotConmonData.kWildItemType
 		9   : "play2",     	//eSlotConmonData.kFruitsBar
 		2	: "play4",   	//bonus
 	},

@@ -114,11 +114,18 @@ ryyl.baseclass.extend({
         let showTimes = 0;
         let nextShowCal = function(_winLines, _lineNode){
             if(showTimes < _winLines.length){
-                let winLineInfo = _winLines[showTimes];
-                let line        = _lineNode[winLineInfo.index];
-                if(line){
-                    line.active = true;
-                    line.runAction(cc.sequence(cc.delayTime(1), cc.callFunc(function() {line.active = false;}.bind(this))));
+                let lines = _winLines[showTimes];
+                let node  = _lineNode[lines.index];
+
+                let _items = lines.items;
+                for (var j = 0; j < _items.length; j++) {
+                    let index = _items[j]
+                    this.playIconEffect(index, itemList)
+                }
+
+                if(node){
+                    node.active = true;
+                    node.runAction(cc.sequence(cc.delayTime(1), cc.callFunc(function() {node.active = false;}.bind(this))));
                 }
             }
 
@@ -321,7 +328,7 @@ ryyl.baseclass.extend({
 
         for (var i = 0; i < scatterList.length; i++) {
             let v = scatterList[i];
-            this.playIconEffect(v,itemList, isBonus);
+            this.playIconEffect(v, itemList, isBonus);
         }
     },
 
@@ -331,33 +338,39 @@ ryyl.baseclass.extend({
             return;
         }
 
-        // let iconIndex = itemList[index];
+        let iconIndex = itemList[index];
 
-        // let addEffIcon = function(_iconIndex, _index){
-        //     let icon = cc.instantiate(this.iconNode);
-        //     icon.getComponent(cc.Sprite).spriteFrame = this.spIcons[_iconIndex];
-        //     icon.position = this.pointArray[_index].center;
-        //     icon.parent   = this.topContainer;
+        let addEffIcon = function(_iconIndex, _index){
+            if(!this.iconNode) return;
+            let icon = this.effectMap[_index];
+            if(!icon){
+                icon = cc.instantiate(this.iconNode);
+                icon.getComponent(cc.Sprite).spriteFrame = this.spIcons[_iconIndex];
+                let _pos = this.pointArray[_index].center;
+                icon.x = -this.scrollSize.width / 2 + _pos.x;
+                icon.y = -this.scrollSize.height / 2 + _pos.y;
+                icon.parent   = this.topContainer;
+            }
 
-        //     // if(index == 1 || index == 4 || index == 7 || index == 10 || index == 13)
-        //     //     icon.scale = this.midScale;
-        //     // else
-        //     //     icon.scale = this.sideScale;
+            this.effectMap[_index] = icon;
+            return icon.getComponent(cc.Animation);
+        }.bind(this)
+
+        if(iconIndex == SlotConst.eSlotConmonData.kWildItemType){
+            let _effect  = addEffIcon(iconIndex, index);
+            let _effName = SlotConst.iconEffect[iconIndex];
+
+            if(_effect && _effName) {
+                let animState = _effect.play(_effName);
+                animState.repeatCount = 1;
+            }
+        }
+        else if(iconIndex == SlotConst.eSlotConmonData.bonus && isBonus){
+
+        }
+        else if(iconIndex == SlotConst.eSlotConmonData.kSlotScatter){
             
-        //     this.effectMap[_index] = icon;
-        //     return icon;
-        // }.bind(this)
-
-        // if(iconIndex == SlotConst.eSlotConmonData.kWildItemType){
-        //     let _icon = addEffIcon(iconIndex, index, iconNode);
-
-        // }
-        // else if(iconIndex == SlotConst.eSlotConmonData.bonus && isBonus){
-
-        // }
-        // else if(iconIndex == SlotConst.eSlotConmonData.kSlotScatter){
-            
-        // }
+        }
                 
     },
 
@@ -393,9 +406,13 @@ ryyl.baseclass.extend({
 
             let pointss = [];
             let defaultLines = SlotConst.LD_SlotLines;
+            let _vertical    = SlotConst.eSlotShap.vertical;
+            let _pointArray  = this.pointArray;
 
-            let _vertical   = SlotConst.eSlotShap.vertical;
-            let _pointArray = this.pointArray;
+            if(!_pointArray || !defaultLines) {
+                JS_ERROR("_pointArray or defaultLines null");
+                return;
+            }
             for (var i = 0; i < _vertical; i++) {
                 let de = defaultLines[index][i];
                 if(de == null) continue;
