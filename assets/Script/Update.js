@@ -67,10 +67,18 @@ cc.Class({
 
                 let abObj = moduleObj.getABObj()
 
-                abObj.loadScene('root/Scene/Login', function (err, scene) {
-                    cc.director.runScene(scene);
-                });
-                
+                abObj.load('root/Scene/Login', cc.Prefab, (err, prefab)=>{  // 使用模块资源 
+
+                    JS_LOG("load_Login_prefab_:", JSON.stringify(err) )
+                    if(this._lobbyRootNode){
+                        this._lobbyRootNode.destroy()
+                    }
+                    let loginRoot = cc.instantiate(prefab) 
+                    this._loginRootNode = loginRoot
+                    this.moduleLayer.addChild(loginRoot, 100)
+                    loginRoot.getComponent("Login").initModule()    
+    
+                }) 
             })
         })
 

@@ -9,7 +9,7 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        updatePrefab: cc.Prefab
+        updatePrefab: cc.Prefab,
     },
 
     // LIFE-CYCLE CALLBACKS:

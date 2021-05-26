@@ -37,6 +37,11 @@ cc.Class({
         
     },
 
+    initModule(){
+        JS_LOG("initModule")
+
+    },
+
     onDestory(){
         ryyl.emitter.off("login.updateend",this); 
         ryyl.emitter.off("gotoLobby",this); 
