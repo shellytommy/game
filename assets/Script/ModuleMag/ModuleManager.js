@@ -169,7 +169,7 @@ cc.Class({
         JS_LOG("moduleName_ori:", moduleNameArr)
         moduleNameArr = this.getDependModule(moduleNameArr)
         JS_LOG("moduleName_dep:", moduleNameArr)
-
+        
         // isShowHotUI 
         let need_Update  = false 
         let need_Restart = false 
@@ -347,6 +347,7 @@ cc.Class({
     },
 
     addModule(moduleName, cb){
+        JS_LOG("moduleName:",this.modules)
         let module = this.modules[moduleName]
         JS_LOG("module_mag-addMOdule:", moduleName, module )
         console.log(" module_mag-addMOdule ", moduleName, module)

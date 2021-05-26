@@ -59,23 +59,46 @@ cc.Class({
 
         if(this._loginPrefab) this._loginPrefab.active = false;
         
-        _G_moduleMag.addModule("ABLobby", (moduleObj)=>{ // 加载模块
+        cc.assetManager.loadBundle("ABLobby",  {}, (err, bundle)=> {
+            
+            if(!err){
+                JS_LOG("loadAB_OK_:", this._ABName )
+                let abObj = bundle 
+                
+                abObj.load('root/Scene/LobbyRoot', cc.Prefab, (err, prefab)=>{  // 使用模块资源 
 
-            let abObj = moduleObj.getABObj();
+                    if(this._lobbyRootNode){
+                        this._lobbyRootNode.destroy()
+                    }
+                    let lobbyRoot = cc.instantiate(prefab) 
+                    this._lobbyRootNode = lobbyRoot
+                    this.moduleLayer.addChild(lobbyRoot, 100)
+                    lobbyRoot.getComponent("LobbyRoot").initModule()    
+
+                }) 
+            }else {
+                JS_LOG("load_ab_Err_:", this._ABName, JSON.stringify(err)) 
+                
+            }
+        });
+
+        // _G_moduleMag.addModule("ABLobby", (moduleObj)=>{ // 加载模块
+
+        //     let abObj = moduleObj.getABObj();
         
-            abObj.load('root/Scene/LobbyRoot', cc.Prefab, (err, prefab)=>{  // 使用模块资源 
+        //     abObj.load('root/Scene/LobbyRoot', cc.Prefab, (err, prefab)=>{  // 使用模块资源 
 
-                // JS_LOG("load_lobby_prefab_:", JSON.stringify(err) )
-                if(this._lobbyRootNode){
-                    this._lobbyRootNode.destroy()
-                }
-                let lobbyRoot = cc.instantiate(prefab) 
-                this._lobbyRootNode = lobbyRoot
-                this.moduleLayer.addChild(lobbyRoot, 100)
-                lobbyRoot.getComponent("LobbyRoot").initModule()    
+        //         // JS_LOG("load_lobby_prefab_:", JSON.stringify(err) )
+        //         if(this._lobbyRootNode){
+        //             this._lobbyRootNode.destroy()
+        //         }
+        //         let lobbyRoot = cc.instantiate(prefab) 
+        //         this._lobbyRootNode = lobbyRoot
+        //         this.moduleLayer.addChild(lobbyRoot, 100)
+        //         lobbyRoot.getComponent("LobbyRoot").initModule()    
 
-            }) 
-        })
+        //     }) 
+        // })
        
     }
 
