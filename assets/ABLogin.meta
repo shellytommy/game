@@ -3,7 +3,7 @@
   "uuid": "d244e6eb-4bfa-4202-948d-82edb31b176a",
   "isBundle": true,
   "bundleName": "ABLogin",
-  "priority": "6",
+  "priority": "7",
   "compressionType": {
     "android": "default"
   },

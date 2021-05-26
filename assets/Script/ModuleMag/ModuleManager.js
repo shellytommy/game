@@ -185,6 +185,7 @@ cc.Class({
                 //     cc.game.restart();
                 // }, 0.1)
                 setTimeout(() => { 
+                    JS_LOG("cc.game.restart")
                     cc.game.restart();
                 }, 100);
             }else {
