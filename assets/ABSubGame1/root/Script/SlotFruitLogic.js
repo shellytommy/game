@@ -56,7 +56,7 @@ fruit.startGame = function (){
     setTimeout(()=>{ 
         let spinRecv = {
             status      : 0,
-            itemList    : [2, 2, 2, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],//[9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 1, 8, 7, 5, 8],
+            itemList    : [3, 3, 3, 0, 3, 3, 3, 3, 3, 2, 2, 2, 3, 3, 3],//[9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 1, 8, 7, 5, 8],
             scatterWin  : 0,
             linesWin    : 20,
             bonusFree   : 10,

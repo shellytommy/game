@@ -382,11 +382,12 @@ ryyl.baseclass.extend({
 
         let _effName = SlotConst.iconEffect[iconIndex];
 
-        JS_LOG("iconIndex ", iconIndex);
-        JS_LOG("_effName ", _effName);
+        // JS_LOG("iconIndex ", iconIndex);
+        // JS_LOG("_effName ", _effName);
 
         if(_effName){
             let _icon     = addEffIcon(iconIndex, index);
+            if(!_icon) return;
             let _effect   = _icon.getComponent(cc.Animation);
             let animState = _effect.play(_effName);
             animState.repeatCount = 1;
@@ -472,7 +473,7 @@ ryyl.baseclass.extend({
                 let _len  = pointss.length;
                 let _iLen = items.length;
                 for (var i = 0; i < _len; i++) {
-                    if(i <= _iLen){
+                    if(i < _iLen){
                         let center = pointss[i].center;
                         let nextPo = pointss[i+1];
 
@@ -511,18 +512,18 @@ ryyl.baseclass.extend({
                         kuang.parent = node;
                     }
                     else {
-                        let _in = i+1;
+                        let _in = i;
                         let pointPro = pointss[_in];
                         if(!pointPro) break;
 
-                        let _line2 = this.drawLine(pointss[i].center, pointPro.center, child);
+                        let _line2 = this.drawLine(pointss[i].left, pointPro.right, child);
                         _line2.parent = node; 
                     }
                 }
 
                 let _pLen       = pointss.length - 1;
                 let lastPoint   = pointss[_pLen];
-                let startPoint  = lastPoint.center;
+                let startPoint  = lastPoint.right;
                 let extLen      = this.scrollSize.width / 10;
                 let endPoint    = cc.v2(startPoint.x + extLen, lastPoint.center.y);
 
