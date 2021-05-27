@@ -10,6 +10,7 @@ let SlotConst = {
         selectLine 	: 'selectLine',
         showWinLine	: 'showWinLine',
         showFreeLine: 'showFreeLine',
+        showScatter : 'showScatter',
 
     },
 

@@ -49,6 +49,7 @@ ryyl.baseclass.extend({
         ryyl.emitter.on(SlotConst.CTCEvent.onProcess,       this.onProcess,             this);
         ryyl.emitter.on(SlotConst.CTCEvent.showWinLine,     this.resultLinesShow,       this);
         ryyl.emitter.on(SlotConst.CTCEvent.showFreeLine,    this.showFreeLine,          this);
+        ryyl.emitter.on(SlotConst.CTCEvent.showScatter,     this.showScatter,          this);
     },
 
     unregisrterEvent(){
@@ -57,6 +58,8 @@ ryyl.baseclass.extend({
         ryyl.emitter.off(SlotConst.CTCEvent.onProcess,      this);
         ryyl.emitter.off(SlotConst.CTCEvent.showWinLine,    this);
         ryyl.emitter.off(SlotConst.CTCEvent.showFreeLine,   this);
+        ryyl.emitter.off(SlotConst.CTCEvent.showScatter,    this);
+
     },
 
     OnDestroy(){
@@ -151,7 +154,7 @@ ryyl.baseclass.extend({
             this.hideSelectedLine();
             this.drawShowLine(winLines);
 
-            this.SlotFruitLogic.set("state", eSpinState.stop);
+            if(this.SlotFruitLogic)this.SlotFruitLogic.set("state", eSpinState.stop);
 
             this.resultWinLine = true;
             nextShowCal(winLines, this.showLineNode);
@@ -166,6 +169,15 @@ ryyl.baseclass.extend({
         let _itemList = data.itemList;
 
         this.resultBonusShow(_winBouns, _itemList);
+    },
+
+    showScatter(data){
+        JS_LOG("showScatter");
+
+        let _scatter  = data.scatter;
+        let _itemList = data.itemList;
+
+        this.resultScatterShow(_scatter, _itemList);
     },
 
     initLayer(data){
@@ -382,12 +394,14 @@ ryyl.baseclass.extend({
 
         let _effName = SlotConst.iconEffect[iconIndex];
 
-        // JS_LOG("iconIndex ", iconIndex);
-        // JS_LOG("_effName ", _effName);
+        JS_LOG("iconIndex ", iconIndex);
+        JS_LOG("_effName ", _effName);
 
         if(_effName){
+            JS_LOG("1111111111 ");
             let _icon     = addEffIcon(iconIndex, index);
             if(!_icon) return;
+            JS_LOG("222222222 ");
             let _effect   = _icon.getComponent(cc.Animation);
             let animState = _effect.play(_effName);
             animState.repeatCount = 1;

@@ -56,8 +56,8 @@ fruit.startGame = function (){
     setTimeout(()=>{ 
         let spinRecv = {
             status      : 0,
-            itemList    : [3, 3, 3, 0, 3, 3, 3, 3, 3, 2, 2, 2, 3, 3, 3],//[9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 1, 8, 7, 5, 8],
-            scatterWin  : 0,
+            itemList    : [10, 3, 3, 10, 3, 3, 10, 3, 3, 2, 2, 2, 3, 3, 3],//[9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 1, 8, 7, 5, 8],
+            scatterWin  : 10,
             linesWin    : 20,
             bonusFree   : 10,
         }
@@ -75,14 +75,8 @@ fruit.resultShow = function (slotSpanRev) {
 
     let eSpinState      = SlotConst.eSpinState;
 
-    let call = function (t){
-        // this.updateSlotState(eSlotState.selectLine)
-        //this.updateWinLabel(0) //更新赢钱数字，先注掉后实现
-    }.bind(this);
-
     if(!slotSpanRev || !slotSpanRev.itemList){
         JS_ERROR("resultShow slotSpanRev nill");
-        call();
         return
     }
 
@@ -97,7 +91,6 @@ fruit.resultShow = function (slotSpanRev) {
 
     let topWin = linesWin + scatterWin + potWin;
     if(topWin <= 0 && bonusFree <= 0 && freeTotalWin <= 0) {
-        call();
         return;
     }
 
@@ -110,9 +103,9 @@ fruit.resultShow = function (slotSpanRev) {
 
     let _time = 1;
     //scatter Animation
-    if(scatterWin && scatterWin.length > 0){
-        // this.slotLineLayer.resultScatterShow(scatter, itemList)
-        // ryyl.emitter.emit(SlotConst.CTCEvent.showFreeLine, {winLines: winLines, itemList: itemList});
+    if(scatterWin && scatter.length > 0){
+        
+        ryyl.emitter.emit(SlotConst.CTCEvent.showScatter, {scatter: scatter, itemList: itemList});
 
         _time = _time + 1000;
     }
@@ -137,6 +130,9 @@ fruit.resultShow = function (slotSpanRev) {
 
     setTimeout(()=>{ 
         this.state = SlotConst.eSpinState.stop;
+
+        // this.updateSlotState(eSlotState.selectLine)
+        //this.updateWinLabel(0) //更新赢钱数字，先注掉后实现
     }, _time);
 
 };
