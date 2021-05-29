@@ -43,7 +43,6 @@ cc.Class({
 
         if( _Gloabal.Client_Version == localClientVer && jsb.fileUtils.isFileExist(path_cache+"cacheList.json")){
             JS_LOG("Non-first start")
-            JS_LOG("Unpackage_not_exec")
             onComplete()
             return ; 
 

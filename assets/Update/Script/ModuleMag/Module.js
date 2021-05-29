@@ -13,10 +13,9 @@ cc.Class({
     },
 
     ctor(){
-        JS_LOG("module_ctor_")
+
     },
     init(ABName, useHotUpdate){
-        JS_LOG("module_init")
         
         this._ABName = ABName
         this._useHotUpdate = useHotUpdate
@@ -99,6 +98,7 @@ cc.Class({
             // RequestType.URL = 'url' 
             cc.assetManager.preloadAny(autoAtlas, { __requestType__: 'url', type: null, bundle: this._abObj.name }, 
                 (finish, total, item)=>{
+                    JS_LOG("3333333333333")
                     if(!is_2Valid){ return; }; 
                     JS_LOG("load_autoatlas_progress_:",this._abObj.name, finish, total )
                     console.log("load_autoatlas_progress_:",this._abObj.name, finish, total )
@@ -121,9 +121,8 @@ cc.Class({
 
         this._abObj.preloadDir("root", (finish, total, item)=>{
             if(!is_Valid){ return; };
-            JS_LOG("preloadDir:", finish, total, item);
             finishNum = total
-            onProgress && onProgress(finish, total + extNum, item);
+            onProgress && onProgress(finish, total, item);
         }, (error, items)=>{
             if(!is_Valid){ return; }; is_Valid = false ;
             if(!error){

@@ -7,8 +7,10 @@ cc.Class({
     
     extends: cc.Component,
     properties: { 
-
+        bundleName: cc.Label,
+        finishName: cc.Label
     },
+
 
     initCom(){
         if(this._isInited){ return }
@@ -24,11 +26,14 @@ cc.Class({
     },
 
     // 下载进度
-    onProgress(curMis, totalMis, finish, total){ 
+    onProgress(bundleName, curMis, totalMis, finish, total){ 
         // this.misNum.string = curMis + "/" + totalMis
         // this.update_proBar.progress = 1.0*finish/total
+        this.bundleName.string = bundleName;
+        this.finishName.string = finish/total*1.0
         JS_LOG(`onProgress : curMis_${curMis},totalMis_${totalMis},finish_${finish},total_${total}`)
     },
+
 
     showUpdating(curMis, totalMis){
 

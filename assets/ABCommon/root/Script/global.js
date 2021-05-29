@@ -1,7 +1,7 @@
-const crypto = require("crypto");
-window.md5 = function(str) {
-    return crypto.createHash('md5').update(str).digest('hex');
-};
+// window.md5 = function(str) {
+//     const crypto = require("crypto");
+//     return crypto.createHash('md5').update(str).digest('hex');
+// };
 
 window.ryyl = window.ryyl || {};
 

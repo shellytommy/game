@@ -152,6 +152,23 @@ cc.Class({
             this._doHotUpdateMulti(moduleNameArr, callback)
         } 
     },
+
+    /** 更新 */
+    // _doHotUpdateBundle(moduleNameArr,callback){
+    //     if(!this._useHotUpdate){
+    //         callback && callback();
+    //         JS_LOG("Don't need update")
+    //         return false;
+    //     }
+    //     let abUrl = ModuleConst.hotUrl + "remote/" + moduleNameArr[0]
+    //     console.log(" abUrl :", abUrl)
+    //     cc.assetManager.loadBundle(abUrl, {}, (err,bundle)=>{
+    //         if(!err){
+    //             console.log("bundle:",bundle)
+    //         }
+    //     })
+    // },
+
     _doHotUpdateMulti(moduleNameArr, callback){
 
         if(!this._useHotUpdate){
@@ -170,6 +187,9 @@ cc.Class({
         moduleNameArr = this.getDependModule(moduleNameArr)
         JS_LOG("moduleName_dep:", moduleNameArr)
         
+        /**
+         * 
+         */
         // isShowHotUI 
         let need_Update  = false 
         let need_Restart = false 
@@ -197,7 +217,7 @@ cc.Class({
         let needUpdateNames = []
         
         let preloadDir = ()=>{
-            JS_LOG("needUpdateNames:",needUpdateNames)
+            JS_LOG("preloadDir:",needUpdateNames)
             this._ModuleCom.sequenceMis(needUpdateNames, ()=>{
                 JS_LOG("hot_update_-allPreloadFinish", JSON.stringify( needUpdateNames));
                 // 所有任务完成
@@ -211,10 +231,9 @@ cc.Class({
                 JS_LOG("needUpdateNames,idx:",needUpdateNames,idx)
                 moduleObj.preloadModule((finish, total, item)=>{
                     JS_LOG("hot_update_-onProgress_info_:", curMisIdx, finish, total, item.url )
-                    this._HotUIHelper.onProgress( curMisIdx, totalMis, finish, total)
+                    this._HotUIHelper.onProgress( needUpdateNames[idx] , curMisIdx, totalMis, finish, total)
                 }, (items)=>{
-                    console.log(" hot_update_-preloadOK_: ", needUpdateNames[idx])
-                    // JS_LOG("hot_update_-preloadOK_:", needUpdateNames[idx] )
+                    JS_LOG("hot_update_-preloadOK_:", needUpdateNames[idx])
                     onExec()
                 })
             })
@@ -239,6 +258,7 @@ cc.Class({
             // 每个预加载任务
             let moduleName = moduleNameArr[idx]
             let retTemp = {}
+            JS_LOG("moduleName: ", moduleName, idx)
             retTemp = this._hotUpdateModule(moduleName, (hot_ret)=>{
                 let {haveNewVer, needRestart} = hot_ret
                 JS_LOG("moduleName,haveNewVer,needRestart ", moduleName, haveNewVer, needRestart)
@@ -347,10 +367,7 @@ cc.Class({
     },
 
     addModule(moduleName, cb){
-        JS_LOG("moduleName:",this.modules)
         let module = this.modules[moduleName]
-        JS_LOG("module_mag-addMOdule:", moduleName, module )
-        console.log(" module_mag-addMOdule ", moduleName, module)
         if(module){ 
             cb(module)
             return module
