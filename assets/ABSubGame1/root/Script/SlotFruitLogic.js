@@ -16,7 +16,7 @@ fruit = SlotFruitLogic.prototype,
 g_instance = null;
 
 fruit.initData = function (){
-    this.betLineNum  = SlotConst.eSlotConmonData.kSlotMinMultiPerLine;
+    this.betLineNum  = 9//SlotConst.eSlotConmonData.kSlotMinMultiPerLine;
     this.state       = SlotConst.eSpinState.stop;        //滚动状态还原
 }
 
@@ -56,7 +56,7 @@ fruit.startGame = function (){
     setTimeout(()=>{ 
         let spinRecv = {
             status      : 0,
-            itemList    : [10, 3, 3, 10, 3, 3, 10, 3, 3, 2, 2, 2, 3, 3, 3],//[9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 1, 8, 7, 5, 8],
+            itemList    : [4, 1, 4, 6, 6, 1, 7, 8, 3, 5, 6, 6, 7, 8, 9],
             scatterWin  : 10,
             linesWin    : 20,
             bonusFree   : 10,

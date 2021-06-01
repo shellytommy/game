@@ -228,18 +228,18 @@ ryyl.baseclass.extend({
                 if(index > arrT.length) index = 1;
 
                 let arrowSize   = this.arrowSize;
-                let pos         = cc.v2( -arrowSize.width/6, pointcpp[1].y);
+                let pos         = cc.v2( -arrowSize.width/6, pointcpp[0].y);
                 let arrow       = cc.instantiate(this.lineArrow);
                 arrow.getComponent(cc.Sprite).spriteFrame = arrT[index];
                 arrow.parent = node;
                 arrow.setPosition(pos);
                 arrow.zIndex = 1;
                 
-                let _lineNode = this.drawLine(pos, pointcpp[1], line);
+                let _lineNode = this.drawLine(pos, pointcpp[0], line);
                 _lineNode.parent = node;
 
 
-                for (var i = 1; i < pointcpp.length - 1; i++) {
+                for (var i = 0; i < pointcpp.length - 1; i++) {
                     let _lineNode1    = this.drawLine(pointcpp[i], pointcpp[i+1], line);
                     _lineNode1.parent = node;
                 }
@@ -394,14 +394,12 @@ ryyl.baseclass.extend({
 
         let _effName = SlotConst.iconEffect[iconIndex];
 
-        JS_LOG("iconIndex ", iconIndex);
-        JS_LOG("_effName ", _effName);
+        // JS_LOG("iconIndex ", iconIndex);
+        // JS_LOG("_effName ", _effName);
 
         if(_effName){
-            JS_LOG("1111111111 ");
             let _icon     = addEffIcon(iconIndex, index);
             if(!_icon) return;
-            JS_LOG("222222222 ");
             let _effect   = _icon.getComponent(cc.Animation);
             let animState = _effect.play(_effName);
             animState.repeatCount = 1;
@@ -491,7 +489,7 @@ ryyl.baseclass.extend({
                         let center = pointss[i].center;
                         let nextPo = pointss[i+1];
 
-                        if(nextPo){
+                        if(nextPo && i + 1 < _iLen){
                             let nextCenter = nextPo.center;
                             let startPoint = pointss[i].right;
 
@@ -500,13 +498,13 @@ ryyl.baseclass.extend({
                                 nextCenter      = nextPo.left;
                             }
                             else if(nextCenter.y < center.y){
-                                startPoint      = pointss[i].rightDown;
+                                startPoint      = pointss[i].right;
                                 nextCenter      = nextPo.leftUp;
                                 nextCenter.y    = nextCenter.y;
                                 startPoint      = cc.v2(startPoint.x, startPoint.y);
                             }
                             else {
-                                startPoint      = pointss[i].rightUp;
+                                startPoint      = pointss[i].right;
                                 nextCenter      = nextPo.leftDown;
                                 nextCenter.y    = nextCenter.y;
                                 startPoint      = cc.v2(startPoint.x, startPoint.y);
@@ -526,25 +524,29 @@ ryyl.baseclass.extend({
                         kuang.parent = node;
                     }
                     else {
-                        let _in = i;
+                        let _in = i - 1;
                         let pointPro = pointss[_in];
                         if(!pointPro) break;
 
-                        let _line2 = this.drawLine(pointss[i].left, pointPro.right, child);
+                        let startPoint = (i == _iLen) ? pointPro.right : pointPro.center;
+                        let nextPoint  = pointss[i].center;
+
+                        let _line2 = this.drawLine(startPoint, nextPoint, child);
                         _line2.parent = node; 
                     }
                 }
 
-                let _pLen       = pointss.length - 1;
-                let lastPoint   = pointss[_pLen];
-                let startPoint  = lastPoint.right;
-                let extLen      = this.scrollSize.width / 10;
-                let endPoint    = cc.v2(startPoint.x + extLen, lastPoint.center.y);
+                //尾巴部分的线
+                if(_len != _iLen){
+                    let _pLen       = _len - 1;
+                    let lastPoint   = pointss[_pLen];
+                    let startPoint  = lastPoint.center;
+                    let endPoint    = lastPoint.right;
 
-                if(items.length >= pointss.length) startPoint = lastPoint.right;
+                    let _line3 = this.drawLine(startPoint, endPoint, child);
+                    _line3.parent = node; 
+                }
 
-                let _line3 = this.drawLine(startPoint, endPoint, child);
-                _line3.parent = node; 
                 node.active = visible;
 
                 //node:runAction(CCSequence:createWithTwoActions(CCDelayTime:create(1), CCHide:create()))
