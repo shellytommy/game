@@ -12,10 +12,6 @@ let JS_LOG = function(...arg){
 cc.Class({
     extends: cc.Component, 
     properties: {
-        ModuleMagPreFab : cc.Prefab ,
-
-        moduleLayer : cc.Node , 
-        msgLayer : cc.Node ,
 
     },
 
@@ -31,27 +27,27 @@ cc.Class({
             JS_LOG("jsb_writable_path:", jsb.fileUtils.getWritablePath());
         } 
 
-        window._G_AppCom = this._AppCom = this.getComponent("AppCom")
+        // window._G_AppCom = this._AppCom = this.getComponent("AppCom")
 
         // 配置热更新地址到 ModuleConst.js
         // 初始化
-        let moduleMagObj    = cc.instantiate(this.ModuleMagPreFab)
-        moduleMagObj.parent = this.msgLayer  
+        // let moduleMagObj    = cc.instantiate(this.ModuleMagPreFab)
+        // moduleMagObj.parent = this.msgLayer  
 
-        window._G_moduleMag = moduleMagObj.getComponent("ModuleManager")  
-        _G_moduleMag.initCom({
-            useHotUpdate : cc.sys.isNative,     // 是否启用热更新 
-        }) 
+        // window._G_moduleMag = moduleMagObj.getComponent("ModuleManager")  
+        // _G_moduleMag.initCom({
+        //     useHotUpdate : cc.sys.isNative,     // 是否启用热更新 
+        // }) 
         
-        //-------------------
+        // //-------------------
 
-        // 复制包内模块到可读写路径下,避免首次加载模块时从远程完整拉取
-        _G_moduleMag.execUnpackage(()=>{
-            _G_moduleMag.reqVersionInfo(()=>{ // 获取最新版本
-                // //到登录场景
-                this.reloadLoginRoot();
-            })
-        })
+        // // 复制包内模块到可读写路径下,避免首次加载模块时从远程完整拉取
+        // _G_moduleMag.execUnpackage(()=>{
+        //     _G_moduleMag.reqVersionInfo(()=>{ // 获取最新版本
+        //         // //到登录场景
+        //         this.reloadLoginRoot();
+        //     })
+        // })
 
         // 定时检测更新
         // _G_moduleMag.reqLoopVersionInfo() 
@@ -59,26 +55,19 @@ cc.Class({
     },
 
     reloadLoginRoot(){
-        let loadAb = ['ABCommon', 'ABLogin', 'ABLobby']
+        let loadAb = ['Update','ABCommon', 'ABLogin', 'ABLobby']
 
-        _G_moduleMag.hotUpdateMultiModule(loadAb,()=>{ // 更新模块到最新版本
-            JS_LOG("loadAb:",loadAb)
-            _G_moduleMag.addModule("ABLogin", (moduleObj)=>{ // 加载模块
-
+        _G_moduleMag.hotUpdateMultiModule(loadAb,()=>{
+            //更新完成，到登陆场景
+            _G_moduleMag.addModule("ABLogin", (moduleObj)=>{
                 let abObj = moduleObj.getABObj()
+                abObj.load('root/Prefab/login_frame', cc.Prefab, (err, prefab)=>{  // 使用模块资源 
 
-                abObj.load('root/Scene/Login', cc.Prefab, (err, prefab)=>{  // 使用模块资源 
+                    JS_LOG("load_lobby_prefab_:", JSON.stringify(err) )
 
-                    JS_LOG("load_Login_prefab_:", JSON.stringify(err) )
-                    if(this._lobbyRootNode){
-                        this._lobbyRootNode.destroy()
-                    }
-                    let loginRoot = cc.instantiate(prefab) 
-                    this._loginRootNode = loginRoot
-                    this.moduleLayer.addChild(loginRoot, 100)
-                    loginRoot.getComponent("Login").initModule()    
-    
-                }) 
+                    let lobbyRoot = cc.instantiate(prefab);
+                    lobbyRoot.parent = cc.director.getScene();
+                })
             })
         })
 

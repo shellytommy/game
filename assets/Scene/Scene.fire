@@ -275,16 +275,19 @@
     "_id": "f3NK9YlWhAk5HGAqNuRqaN"
   },
   {
-    "__type__": "71c15rpXjpHc7l3qCUeZAx8",
+    "__type__": "3afb4nwrMBO5756IRDej2oi",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 2
     },
     "_enabled": true,
-    "updatePrefab": {
-      "__uuid__": "9f977808-3c08-4c03-8a83-bae1db0bcbf1"
+    "asset1": {
+      "__uuid__": "2c284df2-f388-4b76-8441-5a71efd145a3"
     },
-    "_id": "518Hi6mixLeKHZTggAwJd0"
+    "asset2": {
+      "__uuid__": "ab18c661-ef0d-47f4-88ca-1567649c7d5d"
+    },
+    "_id": "60s2FAW+NM0rAElvwKFU58"
   }
 ]

@@ -12,6 +12,9 @@ cc.Class({
 
     },
 
+    onLoad(){
+        JS_LOG("onLoad")
+    },
 
     initModule(){
     	JS_LOG("initModule")
@@ -44,6 +47,12 @@ cc.Class({
         //     //...
         // }) 
 
+    },
+
+    onClose(){
+        let obj = cc.assetManager.getBundle('ABLobby')
+        cc.assetManager.removeBundle(obj);
+        
     },
 
     removeGame_1(){

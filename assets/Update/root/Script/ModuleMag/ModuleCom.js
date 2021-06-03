@@ -1,12 +1,11 @@
 
 // let ModuleCom = require("ModuleCom")
-cc.Class({
-    extends: cc.Component,
 
-    properties: {
+let ModuleCom = class{
+    // extends: cc.Component,
 
-
-    },
+    // properties: {
+    // },
 
     // makeXMLHttp({url: , callback:(retInfo)=>{}})
     makeXMLHttp(args){
@@ -45,7 +44,7 @@ cc.Class({
             xhr.abort()
         }
         return retInfo
-    },
+    }
 
     //并行任务 return : {addMis: , onFinish:}  
     // let pMis = AppComFunc.parallelMis(callback); 
@@ -82,7 +81,7 @@ cc.Class({
             isValid = false
         }
         return ret;
-    },
+    }
 
     //顺序任务 idx:0~N,  AppComFunc.sequenceMis(misArr, onAllFolderDetectFinish, (curMis, idx, onExec)=>{ })
     sequenceMis(misArr, onAllExec, execFunc){
@@ -101,7 +100,7 @@ cc.Class({
             execFunc(mis, curCo, execMis)
         } 
         execMis() 
-    },
+    }
 
     // comVersion(localVer, romoteVer)
     // 对比版本号, -1:本地版本比较旧, 0:相等, 1:本地版本比较新
@@ -122,7 +121,7 @@ cc.Class({
             else if(n_local<n_remote){ return -1}
         }
         return 0
-    },
+    }
     createUUID(){
         var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split(''); 
         var uuid = [];  
@@ -132,7 +131,8 @@ cc.Class({
         let uid = uuid.join('');
         uid = Number(Date.now()).toString(36) + uid 
         return uid
-    },
+    }
 
+}
 
-}); 
+module.exports = ModuleCom;

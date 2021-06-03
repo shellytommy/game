@@ -2,7 +2,7 @@
   "ver": "1.1.2",
   "uuid": "692ce7a9-9eac-4a7e-bd5c-4e4effbd3f84",
   "isBundle": true,
-  "bundleName": "",
+  "bundleName": "Update",
   "priority": "8",
   "compressionType": {
     "android": "default"
@@ -14,7 +14,7 @@
     "android": false
   },
   "isRemoteBundle": {
-    "android": false
+    "android": true
   },
   "subMetas": {}
 }

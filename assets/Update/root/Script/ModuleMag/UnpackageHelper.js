@@ -6,25 +6,30 @@ let JS_LOG = function(...arg){
     console.log("[UnpackageHelper]",...arg) ; 
 }
 
-cc.Class({
+// cc.Class({
     
-    extends: cc.Component,
-    properties: {   
+//     extends: cc.Component,
+//     properties: {   
 
-    },
+//     },
 
+let UnpackageHelper = class{
+
+    constructor(){
+        this.onLoad();
+    }
     
     onLoad(){
-        this._moduleMag = this.getComponent("ModuleManager")
-        this._ModuleCom = this.getComponent("ModuleCom")
-        this._HotUIHelper = this.getComponent("HotUIHelper") 
-    },
+        // _G_moduleMag = this.getComponent("ModuleManager")
+        // this._ModuleCom = this.getComponent("ModuleCom")
+        // this._HotUIHelper = this.getComponent("HotUIHelper") 
+    }
 
 
     initCom(args){
         // let {  } = args     
 
-    },
+    }
 
     execUnpackage(onComplete){
 
@@ -37,7 +42,7 @@ cc.Class({
         let localClientVer = cc.sys.localStorage.getItem(ModuleConst.localClientVer)
         // let writablePath = jsb.fileUtils.getWritablePath() 
         // let path_cache  = writablePath + "gamecaches/" //缓存可写路径
-        let path_cache = this._moduleMag.getWritablePathCash();
+        let path_cache = _G_moduleMag.getWritablePathCash();
 
         JS_LOG("Client_Version:", _Gloabal.Client_Version,localClientVer )
 
@@ -49,7 +54,7 @@ cc.Class({
         }else { 
             JS_LOG("第一次启动该版本")
             // 第一次启动该版本
-            let nativeRoot = this._moduleMag.getNativePath() //app根路径
+            let nativeRoot = _G_moduleMag.getNativePath() //app根路径
             let path_native = nativeRoot + "PKgamecaches/"
             JS_LOG("unpackage_res_:", path_native, path_cache )
 
@@ -91,7 +96,7 @@ cc.Class({
 
                     JS_LOG("writeCache_File_ok")
 
-                    this._moduleMag.setLocalAbVersion(abVersion)
+                    _G_moduleMag.setLocalAbVersion(abVersion)
 
 
                     cc.sys.localStorage.setItem(ModuleConst.localClientVer, _Gloabal.Client_Version )
@@ -102,17 +107,17 @@ cc.Class({
 
             // this._HotUIHelper.unpackageShow() // unuse
             this.copyFoldTo(path_native, path_cache, (finish, total)=>{
-                this._HotUIHelper.unpackageUpdateProgress(finish, total)
+                // this._HotUIHelper.unpackageUpdateProgress(finish, total)
                 JS_LOG("copy_file_:", finish, total)
             },()=>{
                 // 完成 
-                this._HotUIHelper.unpackageFinish()  
+                // this._HotUIHelper.unpackageFinish()  
                 coverCachelist()
             })
         }
 
 
-    },
+    }
 
 
     getFileListFromDir(dir, filelist){
@@ -124,7 +129,7 @@ cc.Class({
             let files = cacheMap.files
             for(let url in files){
                 let item = files[url]
-                let fullpath = this._moduleMag.getNativePath()+"PKgamecaches/"+item.url
+                let fullpath = _G_moduleMag.getNativePath()+"PKgamecaches/"+item.url
                 filelist.push(fullpath)
                 if(co<3){
                     console.log("get_file_list_full_:", fullpath )
@@ -134,7 +139,7 @@ cc.Class({
         }else {
             jsb.fileUtils.listFilesRecursively(dir, filelist)
         } 
-    },
+    }
 
     // 拷贝文件夹到 copyFoldTo("/path1/src/", "/path2/src/") 
     copyFoldTo(oriRoot, copyTo, onProgress, onComplate){
@@ -207,6 +212,7 @@ cc.Class({
         }
         this.schedule(schHandler, 0)
 
-    },
+    }
 
-});
+}
+module.exports = UnpackageHelper;

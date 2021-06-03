@@ -4,43 +4,39 @@
 let Module = require("Module") 
 let ModuleConst = require("ModuleConst")
 
+
 let JS_LOG = function(...arg){ 
     console.log("[ModuleManager]",...arg) ; 
 }
 
-cc.Class({
+
+let ModuleManager = class{
     
-    extends: cc.Component,
-    properties: {  
-        // 获取包内路径; 需要分别绑定 resources 和 Texture 下资源文件;
-        asset1: { default: null, type: cc.Asset }, 
-        asset2: { default: null, type: cc.Asset },
-    },
+    // extends: cc.Component,
+    // properties: {  
+    //     // 获取包内路径; 需要分别绑定 resources 和 Texture 下资源文件;
+    //     asset1: { default: null, type: cc.Asset }, 
+    //     asset2: { default: null, type: cc.Asset },
+    // },
+
+    constructor(){
+        this.onLoad();
+    }
 
     onLoad(){
 
-        this._ModuleCom     = this.getComponent("ModuleCom")
-        this._unpackage     = this.getComponent("UnpackageHelper")
-        this._HotUIHelper   = this.getComponent("HotUIHelper") 
+        var ModuleCom = require("./ModuleCom")
+        var UnpackageHelper = require("./UnpackageHelper")
 
-        this._nativeRootPath = ""   // native ab根路径 , 以 / 结尾
+        this._unpackage     = new UnpackageHelper();
+        this._ModuleCom     = new ModuleCom();
 
-        //Get resource root path.
-        if(cc.sys.isNative){
-            let absPath1 = jsb.fileUtils.fullPathForFilename(this.asset1.nativeUrl).replace("//","/")
-            let absPath2 = jsb.fileUtils.fullPathForFilename(this.asset2.nativeUrl).replace("//","/")
-            let testLen = absPath1.length>absPath2.length? absPath2.length : absPath1.length 
+        // this._HotUIHelper   = this.getComponent("HotUIHelper") 
 
-            for(let i=0;i<testLen;i++){
-                if(absPath1[i] != absPath2[i]){
-                    this._nativeRootPath = absPath1.substring(0, i)
-                    break
-                }
-            }
-            // JS_LOG("default_path_:", jsb.fileUtils.getDefaultResourceRootPath()); 
-            JS_LOG("_nativeRootPath:", this._nativeRootPath )
-        }
-    },
+        this._nativeRootPath = _nativeRootPath;
+        JS_LOG("this._nativeRootPath: ", this._nativeRootPath)
+
+    }
 
     initCom(args){
         let { useHotUpdate } = args 
@@ -59,26 +55,26 @@ cc.Class({
             versionData = this.createDefaultVersionData() 
         }else {
             versionData = JSON.parse(versionData)
-        } 
+        }
         this._local_Version = versionData
 
         this._romoteVersion = this.createDefaultVersionData()
         
-    },
+    }
 
     execUnpackage(onComplate){
         this._unpackage.execUnpackage(onComplate)
-    },
+    }
 
     getNativePath(){
         return this._nativeRootPath
-    },
+    }
 
     getWritablePathCash(){
         let writablePath = jsb.fileUtils.getWritablePath() 
         let path_cache  = writablePath + "gamecaches/" //缓存可写路径
         return path_cache;
-    },
+    }
 
     reqLoopVersionInfo(){
         if(this._useHotUpdate){
@@ -89,7 +85,7 @@ cc.Class({
             }
             this.schedule(this._reqLoopHandler, this._detectNewVersionInterval)
         }
-    },
+    }
 
     // 更新AB版本号 , 新包安装解压资源后覆盖版本号
     setLocalAbVersion(verObj){
@@ -105,15 +101,15 @@ cc.Class({
         } 
 
         cc.sys.localStorage.setItem(this._local_data_key, JSON.stringify(this._local_Version))
-    },
+    }
 
     get_LocalVersion(){
         return this._local_Version
-    },
+    }
 
     get_RomoteVersion(){
         return this._romoteVersion
-    },
+    }
 
     createDefaultVersionData(){
         let ret = {
@@ -121,7 +117,7 @@ cc.Class({
             modules : {}
         }   
         return ret 
-    },
+    }
     
     // 更新所有模块
     hotUpdateAllModule(callback, isShowHotDetectAlert){
@@ -132,15 +128,15 @@ cc.Class({
 
         // 显示正在检测更新提示
         if(isShowHotDetectAlert){
-            this._HotUIHelper.checkNewVersionShow()
+            // this._HotUIHelper.checkNewVersionShow()
         }
 
         return this.hotUpdateMultiModule(Object.keys(this._romoteVersion.modules), ()=>{ 
-            this._HotUIHelper.checkNewVersionHide()
+            // this._HotUIHelper.checkNewVersionHide()
             callback()
         })
 
-    },
+    }
 
     // 置顶更新模块
     hotUpdateMultiModule(moduleNameArr, callback){
@@ -151,7 +147,7 @@ cc.Class({
         }else {
             this._doHotUpdateMulti(moduleNameArr, callback)
         } 
-    },
+    }
 
     /** 更新 */
     // _doHotUpdateBundle(moduleNameArr,callback){
@@ -179,7 +175,7 @@ cc.Class({
 
         // 大版本太旧
         if(-1 == this._ModuleCom.comVersion(_Gloabal.Client_Version, this._romoteVersion.clientMin )){
-            this._HotUIHelper.showAlertClientTooOld()
+            // this._HotUIHelper.showAlertClientTooOld()
             console.log(" 大版本太旧 ")
             return 
         }
@@ -196,9 +192,11 @@ cc.Class({
 
         // 所有module更新完成
         let onAllModuleHotFinish = ()=>{
-            JS_LOG("hot_update_-AllHot_Finish")
-            console.log(" hot_update_-AllHot_Finish ")
-            cc.sys.localStorage.setItem(this._local_data_key, JSON.stringify(this._local_Version))
+
+            JS_LOG("所有module更新完成: ", JSON.stringify(this._local_Version));
+
+            cc.sys.localStorage.setItem(this._local_data_key, JSON.stringify(this._local_Version));
+
             if(need_Restart){
                 // this.scheduleOnce(()=>{ 
                 //     // cc.sys.restartVM() 
@@ -221,7 +219,8 @@ cc.Class({
             this._ModuleCom.sequenceMis(needUpdateNames, ()=>{
                 JS_LOG("hot_update_-allPreloadFinish", JSON.stringify( needUpdateNames));
                 // 所有任务完成
-                this._HotUIHelper.hideUpdating(onAllModuleHotFinish)
+                onAllModuleHotFinish(); 
+                // this._HotUIHelper.hideUpdating(onAllModuleHotFinish)
 
             }, (curMis, idx, onExec)=>{ 
                 // 每个预加载任务
@@ -231,7 +230,7 @@ cc.Class({
                 JS_LOG("needUpdateNames,idx:",needUpdateNames,idx)
                 moduleObj.preloadModule((finish, total, item)=>{
                     JS_LOG("hot_update_-onProgress_info_:", curMisIdx, finish, total, item.url )
-                    this._HotUIHelper.onProgress( needUpdateNames[idx] , curMisIdx, totalMis, finish, total)
+                    // this._HotUIHelper.onProgress( needUpdateNames[idx] , curMisIdx, totalMis, finish, total)
                 }, (items)=>{
                     JS_LOG("hot_update_-preloadOK_:", needUpdateNames[idx])
                     onExec()
@@ -244,11 +243,11 @@ cc.Class({
             // 所有配置下载完成
             console.log("所有配置下载完成")
             if(need_Update){
-                this._HotUIHelper.showUpdating(1, needUpdateNames.length)
-                this._HotUIHelper.showHotAlert(need_Restart, ()=>{
+                // this._HotUIHelper.showUpdating(1, needUpdateNames.length)
+                // this._HotUIHelper.showHotAlert(need_Restart, ()=>{
                     console.log("preloadDir")
                     preloadDir()
-                })
+                // })
             }else {
                 console.log("onAllModuleHotFinish")
                 onAllModuleHotFinish()
@@ -272,7 +271,7 @@ cc.Class({
             // ------------------------------------------ 
         })
         
-    },
+    }
 
     // 获取依赖模块, 并排序
     getDependModule(names, h){
@@ -303,10 +302,11 @@ cc.Class({
         }
 
         return Object.keys(ret)
-    },
+    }
 
     // 更新到最新版本 
     _hotUpdateModule(moduleName, callback){
+
         if(!this._useHotUpdate){
             let ret = { haveNewVer:false, needRestart:false };
             callback && callback(ret);
@@ -355,16 +355,16 @@ cc.Class({
         }
         return ret
 
-    },
+    }
     // ------------------------------------------------------------
     getBundle(moduleName){
         // JS_LOG("ModuleMag_getbundle__:", moduleName)
         return this.modules[moduleName]._abObj
-    },
+    }
 
     getModule(moduleName){
         return this.modules[moduleName]
-    },
+    }
 
     addModule(moduleName, cb){
         let module = this.modules[moduleName]
@@ -382,14 +382,14 @@ cc.Class({
             cb && cb(moduleObj)
         })
 
-    },
+    }
 
     removeModule(moduleName){
         let moduleObj = this.modules[moduleName]
         if(!moduleObj){ return }
         moduleObj.releaseAB()
         delete this.modules[moduleName];
-    },
+    }
 
     //------------------------------------------------------------------->> 查询新版本
     isNeedReq_versionInfo(){
@@ -403,7 +403,7 @@ cc.Class({
             return true 
         } 
         return false
-    },
+    }
 
     reqVersionInfo(callback){
 
@@ -450,9 +450,11 @@ cc.Class({
             callback && callback();
         }}) 
         
-    },
+    }
     
 
     //-------------------------------------------------------------------<< 查询新版本
 
-});
+}
+
+module.exports = ModuleManager;

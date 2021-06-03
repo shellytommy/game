@@ -1,5 +1,5 @@
 let JS_LOG = function(...arg){ 
-    cc.log("[login_frame]",...arg) ; 
+    console.log("[login_frame]",...arg) ; 
 }
 
 ryyl.baseclass.extend({
@@ -24,19 +24,19 @@ ryyl.baseclass.extend({
         this._super();
 
         this.registerEvent();
-        this.phone_continue.interactable = false;
-        this.otp_continue.interactable = false;
+        // this.phone_continue.interactable = false;
+        // this.otp_continue.interactable = false;
 
 
-        this.loginInTime = null;
-        this.facebookSend = 0;
+        // this.loginInTime = null;
+        // this.facebookSend = 0;
         
-        this.otpNode.active = false;
+        // this.otpNode.active = false;
 
-        this.phone_edit.placeholder = ryyl.i18n.t("LOGIN.PHONENUMBER");
+        // this.phone_edit.placeholder = ryyl.i18n.t("LOGIN.PHONENUMBER");
         
-        this.otp_returnPhone.string = ryyl.i18n.t("LOGIN.RETURNPHONE");
-        this.otp_edit.placeholder   = ryyl.i18n.t("LOGIN.OTPEDIT");
+        // this.otp_returnPhone.string = ryyl.i18n.t("LOGIN.RETURNPHONE");
+        // this.otp_edit.placeholder   = ryyl.i18n.t("LOGIN.OTPEDIT");
         
     },
 
@@ -94,6 +94,7 @@ ryyl.baseclass.extend({
             this.loginInTime = null;
         }
         this.unRegisterEvent();
+
     },
 
     registerEvent() {
@@ -176,8 +177,8 @@ ryyl.baseclass.extend({
             case "login_guest":
                 // this.loading();
                 // ryyl.logon.reqTouLogin();
-
-                ryyl.emitter.emit("gotoLobby");
+                // ryyl.emitter.emit("gotoLobby");
+                this.reloadLobbyRoot();
                 break;
             case "login_phone":
                 this.otpNode.active = true;
@@ -309,6 +310,26 @@ ryyl.baseclass.extend({
             phone: acc,
             code: psw,
         });
+    },
+
+    reloadLobbyRoot(){
+        let bundle = cc.assetManager.getBundle("ABLogin");
+        JS_LOG("bundle: ", JSON.stringify(bundle));
+        // cc.assetManager.removeBundle(bundle);
+        JS_LOG("adfsdf")
+        cc.assetManager.loadBundle("ABLobby",  {}, (err, bundle)=> {
+            if(!err){
+                let abObj = bundle 
+                abObj.load('root/Scene/LobbyRoot', cc.Prefab, (err, prefab)=>{  // 使用模块资源 
+                    let lobbyRoot = cc.instantiate(prefab)
+                    lobbyRoot.parent = cc.director.getScene();
+                    lobbyRoot.getComponent("LobbyRoot").initModule()    
+                }) 
+            }else {
+                JS_LOG("load_ab_Err_:",JSON.stringify(err)) 
+            }
+        });
+
     },
 
 });

@@ -40,7 +40,7 @@ window.deepClone = function(target) {
 window.ryyl = window.ryyl || {};
 
 window.initGlobal = function() {
-
+    console.log('init ABCommon')
     // // 注册前后台切换事件
     // window.isShow = false;
     

@@ -68,21 +68,21 @@ cc.Class({
 
         //---------------------------------------------------------
         let autoAtlas = []
-        // let resMap = this._abObj._config.assetInfos._map
-        // for(let idx in resMap){
-        //     let item = resMap[idx]
-        //     if(!item.path && item.nativeVer){
-        //         let urll = cc.assetManager.utils.getUrlWithUuid(item.uuid, {
-        //             __nativeName__: ".png",
-        //             nativeExt: cc.path.extname(".png"),
-        //             isNative: true
-        //         });
-        //         JS_LOG("urll:",urll);
-        //         if(urll){
-        //             autoAtlas.push(urll)
-        //         }
-        //     }
-        // }
+        let resMap = this._abObj._config.assetInfos._map
+        for(let idx in resMap){
+            let item = resMap[idx]
+            if(!item.path && item.nativeVer){
+                let urll = cc.assetManager.utils.getUrlWithUuid(item.uuid, {
+                    __nativeName__: ".png",
+                    nativeExt: cc.path.extname(".png"),
+                    isNative: true
+                });
+                JS_LOG("urll:",urll);
+                if(urll){
+                    autoAtlas.push(urll)
+                }
+            }
+        }
 
         JS_LOG("autoatlas_url_arr_:", JSON.stringify(autoAtlas))
         let extNum = autoAtlas.length 
@@ -92,13 +92,13 @@ cc.Class({
             if(autoAtlas.length == 0 ){ 
                 if(!is_2Valid){ return; }; is_2Valid = false ;
                 onComplete && onComplete();
+                console.log(" jieshu ")
                 return
             }
             JS_LOG("preloadAny")
             // RequestType.URL = 'url' 
             cc.assetManager.preloadAny(autoAtlas, { __requestType__: 'url', type: null, bundle: this._abObj.name }, 
                 (finish, total, item)=>{
-                    JS_LOG("3333333333333")
                     if(!is_2Valid){ return; }; 
                     JS_LOG("load_autoatlas_progress_:",this._abObj.name, finish, total )
                     console.log("load_autoatlas_progress_:",this._abObj.name, finish, total )
@@ -121,6 +121,7 @@ cc.Class({
 
         this._abObj.preloadDir("root", (finish, total, item)=>{
             if(!is_Valid){ return; };
+            JS_LOG("finish, total, item: ", finish, total, item, this._ABName)
             finishNum = total
             onProgress && onProgress(finish, total, item);
         }, (error, items)=>{
