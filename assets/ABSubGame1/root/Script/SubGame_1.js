@@ -14,6 +14,7 @@ ryyl.baseclass.extend({
     properties:{
         SlotMachine:cc.Prefab,
         SlotLineLayer:cc.Prefab,
+        SlotControlLayer:cc.Prefab,
     },
 
     initModule(args){
@@ -29,6 +30,7 @@ ryyl.baseclass.extend({
             this.slotLogic = require("SlotFruitLogic").getInstance();
             ryyl.panel.showPanel(this.SlotMachine,      this.node);
             ryyl.panel.showPanel(this.SlotLineLayer,    this.node);
+            ryyl.panel.showPanel(this.SlotControlLayer,    this.node);
         } catch (e) {
             console.error(e);
             console.error(JSON.stringify(e));

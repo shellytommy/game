@@ -16,7 +16,7 @@ fruit = SlotFruitLogic.prototype,
 g_instance = null;
 
 fruit.initData = function (){
-    this.betLineNum  = 9;//SlotConst.eSlotConmonData.kSlotMinMultiPerLine;
+    this.betLineNum  = SlotConst.eSlotConmonData.kSlotMinMultiPerLine;
     this.state       = SlotConst.eSpinState.stop;        //滚动状态还原
 }
 

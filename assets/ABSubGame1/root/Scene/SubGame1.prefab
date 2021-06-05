@@ -1159,7 +1159,7 @@
         "__id__": 32
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 35
@@ -1771,7 +1771,7 @@
         "__id__": 48
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 51
@@ -2105,6 +2105,9 @@
     },
     "SlotLineLayer": {
       "__uuid__": "88324f38-a807-4e02-b95c-c76e688a0e3f"
+    },
+    "SlotControlLayer": {
+      "__uuid__": "e836027b-310b-47cd-9c02-df4a9095eb2b"
     },
     "_id": ""
   },
