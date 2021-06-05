@@ -1,0 +1,36 @@
+{
+  "ver": "2.3.5",
+  "uuid": "0a157e23-57b6-4943-b736-ac43a4725963",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 43,
+  "height": 44,
+  "platformSettings": {},
+  "subMetas": {
+    "slot_ui_lvstar": {
+      "ver": "1.0.4",
+      "uuid": "929d638f-ef51-4ffb-aa89-b52561bed0b0",
+      "rawTextureUuid": "0a157e23-57b6-4943-b736-ac43a4725963",
+      "trimType": "custom",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 43,
+      "height": 44,
+      "rawWidth": 43,
+      "rawHeight": 44,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

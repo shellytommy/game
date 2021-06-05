@@ -16,7 +16,7 @@ fruit = SlotFruitLogic.prototype,
 g_instance = null;
 
 fruit.initData = function (){
-    this.betLineNum  = 9//SlotConst.eSlotConmonData.kSlotMinMultiPerLine;
+    this.betLineNum  = 9;//SlotConst.eSlotConmonData.kSlotMinMultiPerLine;
     this.state       = SlotConst.eSpinState.stop;        //滚动状态还原
 }
 
@@ -56,7 +56,7 @@ fruit.startGame = function (){
     setTimeout(()=>{ 
         let spinRecv = {
             status      : 0,
-            itemList    : [4, 1, 4, 6, 6, 1, 7, 8, 3, 5, 6, 6, 7, 8, 9],
+            itemList    : [3, 1, 3, 5, 1, 7, 8, 1, 4, 9, 6, 3, 0, 6, 8],
             scatterWin  : 10,
             linesWin    : 20,
             bonusFree   : 10,
@@ -67,7 +67,21 @@ fruit.startGame = function (){
         }.bind(this);
         ryyl.emitter.emit(SlotConst.CTCEvent.onProcess, {process: SlotConst.eSlotCallbackType.slotStop, recv : spinRecv, callback: _cal});
     }, 1500);
+
+    this.randomData();
 }
+
+fruit.randomData = function (){
+    let _selectLines = this.betLineNum;
+    let _slotLines   = SlotConst.LD_SlotLines;
+    let _linePoints  = _slotLines.splice(0, _selectLines);
+
+    JS_ERROR("_linePoints = ", _linePoints);
+
+    // let _firstWin = Math.random() * 
+
+}
+
 
  //result show and animations
 fruit.resultShow = function (slotSpanRev) {
